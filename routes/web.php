@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\WireController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -11,6 +12,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
+
+    Route::get('wires', [WireController::class, 'index'])->name('wires.index');
 });
 
 require __DIR__.'/settings.php';

@@ -65,5 +65,14 @@ class DatabaseSeeder extends Seeder
                 'short' => $wire_color['short']
             ]);
         }
+
+        User::create([
+            'name' => 'Николай Сироткин',
+            'email' => 'nickup8@yandex.ru',
+            'password' => bcrypt('password'),
+            
+        ])->assignRole([RolesEnum::ENGINEER->value, RolesEnum::USER_MANAGER->value]);
     }
+
+    
 }
