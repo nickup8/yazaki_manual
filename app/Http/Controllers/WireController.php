@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\WireStoreRequest;
 use App\Http\Resources\WireResource;
+use App\Imports\WiresImport;
 use App\Models\Wire;
 use App\Models\WireColor;
 use App\Models\WireType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Inertia\ResponseFactory;
+use Maatwebsite\Excel\Facades\Excel;
 
 class WireController extends Controller
 {
@@ -96,5 +98,16 @@ class WireController extends Controller
         ]);
 
         return back()->with('success', 'Провод ' . $wire->wire_key . ' успешно создан');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimetypes:text/csv,text/plain,application/vnd.ms-excel,application/octet-stream',
+        ]);
+
+        Excel::import(new WiresImport, $request->file('file'));
+
+        return redirect()->route('wires.index')->with('success', 'Провода успешно импортированы');
     }
 }

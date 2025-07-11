@@ -5,9 +5,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem, Wire, WireColor, WireType } from '@/types';
-import { Head, Link, router } from '@inertiajs/react';
-import { CloudDownload, Loader2, Plus } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Head, Link, router, useForm } from '@inertiajs/react';
+import { CloudDownload, Import, Loader2, Plus } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import WireTable from './wire-table';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -36,6 +36,12 @@ export default function WireIndex({
 
     const [isSearching, setIsSearching] = useState(false);
     const [isResetting, setIsResetting] = useState(false);
+
+    const { post, progress, setData, processing, reset } = useForm<{ file: File | null }>({
+        file: null,
+    });
+
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
@@ -84,6 +90,29 @@ export default function WireIndex({
         setSelectedColorAddId('');
     };
 
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        router.post(route('wires.import'), formData, {
+            forceFormData: true,
+            preserveScroll: true,
+            onSuccess: () => {
+                router.visit('/wires', { only: ['wires'], preserveState: true });
+            },
+            onError: (errors) => {
+                console.error('Import errors:', errors);
+                alert('Ошибка при импорте файла: ' + Object.values(errors)[0]);
+                if (fileInputRef.current) {
+                    fileInputRef.current.value = '';
+                }
+            },
+        });
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Провода" />
@@ -109,6 +138,23 @@ export default function WireIndex({
                             </Button>
                         </TooltipTrigger>
                         <TooltipContent>Показать все провода</TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button variant="ghost" size="icon" className="relative ml-2 overflow-hidden border border-sidebar-border/50">
+                                <Import />
+                                <Input
+                                    ref={fileInputRef}
+                                    type="file"
+                                    name="file"
+                                    accept=".xlsx,.csv,.txt"
+                                    className="absolute top-0 left-0 h-full w-full cursor-pointer opacity-0"
+                                    onChange={handleFileChange}
+                                    disabled={processing}
+                                />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Импорт из файла</TooltipContent>
                     </Tooltip>
                 </div>
                 <form className="flex w-full flex-wrap gap-2 border-t border-b py-2" onSubmit={handleSubmit}>
@@ -194,6 +240,13 @@ export default function WireIndex({
                     </div>
                 )}
             </div>
+            {processing && (
+                <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/70 text-white">
+                    <Loader2 className="mb-4 h-12 w-12 animate-spin" />
+                    <div className="mb-2 text-lg">Импорт файла...</div>
+                    <div className="text-xl font-bold">{progress ? `${progress.percentage}% (${progress.total} байт)` : 'Загрузка...'}</div>
+                </div>
+            )}
         </AppLayout>
     );
 }

@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             'Не определено',
             'PVAM',
             'PVACA',
+            'PRFLRYB',
             'PR3Z',
             'T3',
         ];
@@ -42,8 +43,8 @@ class DatabaseSeeder extends Seeder
     ['name' => 'Черный',          'short' => 'BK', 'hex' => '#000000'], // Масса (GND)
     ['name' => 'Красный',         'short' => 'RD', 'hex' => '#FF0000'], // Питание +12V
     ['name' => 'Жёлтый',          'short' => 'YE', 'hex' => '#FFFF00'], // Постоянное питание (память)
-    ['name' => 'Оранжевый',       'short' => 'OR', 'hex' => '#FFA500'], // Подсветка/ACC
-    ['name' => 'Голубой',         'short' => 'LB', 'hex' => '#ADD8E6'], // Управление аксессуарами
+    ['name' => 'Оранжевый',       'short' => 'OG', 'hex' => '#FFA500'], // Подсветка/ACC
+    ['name' => 'Голубой',         'short' => 'BU', 'hex' => '#ADD8E6'], // Управление аксессуарами
     ['name' => 'Коричневый',      'short' => 'BN', 'hex' => '#A52A2A'], // Альтернативная масса / mute
     ['name' => 'Зелёный',         'short' => 'GN', 'hex' => '#008000'], // Сигнал, аксессуары
     ['name' => 'Белый',           'short' => 'WH', 'hex' => '#FFFFFF'], // Мультимедиа / CAN
@@ -52,7 +53,7 @@ class DatabaseSeeder extends Seeder
     ['name' => 'Розовый',         'short' => 'PK', 'hex' => '#FFC0CB'],
     ['name' => 'Светло зелёный',  'short' => 'LG', 'hex' => '#90EE90'],
     ['name' => 'Бирюзовый',       'short' => 'TQ', 'hex' => '#40E0D0'],
-    ['name' => 'Бежевый',         'short' => 'BE', 'hex' => '#F5F5DC'],
+    ['name' => 'Бежевый',         'short' => 'BG', 'hex' => '#F5F5DC'],
     ['name' => 'Лавандовый',      'short' => 'LV', 'hex' => '#E6E6FA'],
     ['name' => 'Небесно-голубой', 'short' => 'SB', 'hex' => '#87CEEB'],
 ];
