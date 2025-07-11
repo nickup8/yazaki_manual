@@ -15,6 +15,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('wires', [WireController::class, 'index'])->name('wires.index');
     Route::get('wires/create', [WireController::class, 'create'])->name('wires.create');
+    Route::post('wires/store', [WireController::class, 'store'])->name('wires.store');
 });
 
 require __DIR__.'/settings.php';

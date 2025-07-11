@@ -1,5 +1,6 @@
 import Heading from '@/components/heading';
 import HeadingSmall from '@/components/heading-small';
+import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -7,35 +8,50 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 
-import { Head } from '@inertiajs/react';
-import { useState } from 'react';
+import { Head, router, useForm } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Провода',
-        href: '/wires',
-    },
-    {
-        title: 'Создание провода',
-        href: '/wires/create',
-    },
+    { title: 'Провода', href: '/wires' },
+    { title: 'Создание провода', href: '/wires/create' },
 ];
-export default function WireCreate({ wire_types, wire_colors }: { wire_types: any[]; wire_colors: any[] }) {
-    const [wireKey, setWireKey] = useState('');
-    const [description, setDescription] = useState('');
-    const [selectedTypeId, setSelectedTypeId] = useState('');
-    const [selectedColorBaseId, setSelectedColorBaseId] = useState('');
-    const [selectedColorAddId, setSelectedColorAddId] = useState('');
 
-    const [isSearching, setIsSearching] = useState(false);
-    const [isResetting, setIsResetting] = useState(false);
+export default function WireCreate({ wire_types, wire_colors, success }: { wire_types: any[]; wire_colors: any[]; success: string }) {
+    const { data, errors, processing, setData, post, reset } = useForm({
+        wire_key: '',
+        description: '',
+        wire_type_id: '',
+        wire_color_base_id: '',
+        wire_color_add_id: '',
+        cross_section: '',
+    });
 
-    const resetForm = () => {
-        setWireKey('');
-        setDescription('');
-        setSelectedTypeId('');
-        setSelectedColorBaseId('');
-        setSelectedColorAddId('');
+    console.log(success);
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        const rawValue = data.cross_section.replace(',', '.');
+        const floatValue = parseFloat(rawValue);
+
+        if (isNaN(floatValue)) {
+            alert('Введите корректное число в поле "Сечение"');
+            return;
+        }
+
+        router.post(
+            route('wires.store'),
+            {
+                ...data,
+                cross_section: floatValue.toFixed(2),
+            },
+            {
+                onSuccess: () => reset(),
+            },
+        );
+    };
+
+    const handleReset = () => {
+        reset();
     };
 
     return (
@@ -43,25 +59,47 @@ export default function WireCreate({ wire_types, wire_colors }: { wire_types: an
             <Head title="Создание провода" />
             <div className="flex h-full flex-1 flex-col overflow-x-auto rounded-xl p-4">
                 <Heading title="Создание провода" />
-                <form className="flex w-full flex-col gap-4">
+                <form className="flex w-full flex-col gap-4" onSubmit={handleSubmit}>
                     <div className="flex gap-2">
                         <div className="w-[280px]">
                             <Label htmlFor="wire_key">Код провода</Label>
-                            <Input id="wire_key" type="text" />
+                            <Input
+                                id="wire_key"
+                                type="text"
+                                value={data.wire_key}
+                                onChange={(e) => setData('wire_key', e.target.value)}
+                                disabled={processing}
+                            />
+                            <InputError message={errors.wire_key} />
                         </div>
                         <div className="w-[280px]">
                             <Label htmlFor="cross_section">Сечение</Label>
-                            <Input id="cross_section" type="text" />
+                            <Input
+                                id="cross_section"
+                                type="text"
+                                value={data.cross_section}
+                                onChange={(e) => setData('cross_section', e.target.value)}
+                                disabled={processing}
+                            />
+                            <InputError message={errors.cross_section} />
                         </div>
                         <div className="flex-1">
                             <Label htmlFor="description">Описание</Label>
-                            <Input id="description" type="text" onChange={(e) => setDescription(e.target.value)} />
+                            <Input
+                                id="description"
+                                type="text"
+                                value={data.description}
+                                onChange={(e) => setData('description', e.target.value)}
+                                disabled={processing}
+                            />
+                            <InputError message={errors.description} />
                         </div>
                     </div>
+
                     <div className="flex gap-2">
                         <div>
                             <Label htmlFor="wire_type">Тип провода</Label>
-                            <Select value={selectedTypeId} onValueChange={setSelectedTypeId} disabled={isSearching || isResetting}>
+                            <Select value={data.wire_type_id} onValueChange={(value) => setData('wire_type_id', value)} disabled={processing}>
                                 <SelectTrigger className="w-[280px]">
                                     <SelectValue placeholder="Выберите тип провода" />
                                 </SelectTrigger>
@@ -73,14 +111,15 @@ export default function WireCreate({ wire_types, wire_colors }: { wire_types: an
                                     ))}
                                 </SelectContent>
                             </Select>
+                            <InputError message={errors.wire_type_id} />
                         </div>
+
                         <div>
                             <Label htmlFor="color_base">Базовый цвет</Label>
                             <Select
-                                name="color_base"
-                                value={selectedColorBaseId}
-                                onValueChange={setSelectedColorBaseId}
-                                disabled={isSearching || isResetting}
+                                value={data.wire_color_base_id}
+                                onValueChange={(value) => setData('wire_color_base_id', value)}
+                                disabled={processing}
                             >
                                 <SelectTrigger className="w-[280px]">
                                     <SelectValue placeholder="Базовый цвет" />
@@ -96,14 +135,15 @@ export default function WireCreate({ wire_types, wire_colors }: { wire_types: an
                                     ))}
                                 </SelectContent>
                             </Select>
+                            <InputError message={errors.wire_color_base_id} />
                         </div>
+
                         <div>
-                            <Label htmlFor="color_add">Базовый цвет</Label>
+                            <Label htmlFor="color_add">Доп. цвет</Label>
                             <Select
-                                name="color_add"
-                                value={selectedColorAddId}
-                                onValueChange={setSelectedColorAddId}
-                                disabled={isSearching || isResetting}
+                                value={data.wire_color_add_id}
+                                onValueChange={(value) => setData('wire_color_add_id', value)}
+                                disabled={processing}
                             >
                                 <SelectTrigger className="w-[280px]">
                                     <SelectValue placeholder="Доп. цвет" />
@@ -121,15 +161,17 @@ export default function WireCreate({ wire_types, wire_colors }: { wire_types: an
                             </Select>
                         </div>
                     </div>
+
                     <div className="flex gap-2">
-                        <Button variant="default" type="submit">
+                        <Button variant="default" type="submit" disabled={processing}>
                             Создать
                         </Button>
-                        <Button variant="outline" type="reset" onClick={resetForm}>
+                        <Button variant="outline" type="button" onClick={handleReset}>
                             Сбросить
                         </Button>
                     </div>
                 </form>
+
                 <div className="mt-8">
                     <HeadingSmall
                         title="Пример отображения"
@@ -137,28 +179,22 @@ export default function WireCreate({ wire_types, wire_colors }: { wire_types: an
                     />
                     <div className="mt-4">
                         <div className="mb-0.5 text-center">
-                            {description ? (
-                                description
-                            ) : (
-                                <span className="text-sm text-gray-500">
-                                    Описание провода <b></b>
-                                </span>
-                            )}
+                            {data.description ? data.description : <span className="text-sm text-gray-500">Описание провода</span>}
                         </div>
                         <div className="relative flex w-full items-center border border-sidebar-border/70 dark:border-sidebar-border">
                             <div
                                 className="relative flex h-10 w-full items-center justify-center px-4 text-sm text-gray-500"
                                 style={{
-                                    backgroundColor: wire_colors.find((color) => String(color.id) === selectedColorBaseId)?.hex || 'transparent',
+                                    backgroundColor: wire_colors.find((c) => String(c.id) === data.wire_color_base_id)?.hex || 'transparent',
                                 }}
                             >
-                                {!selectedColorBaseId && <span>Цвет провода</span>}
+                                {!data.wire_color_base_id && <span>Цвет провода</span>}
                             </div>
-                            {selectedColorAddId && (
+                            {data.wire_color_add_id && (
                                 <div
                                     className="absolute top-1/2 h-1 w-full -translate-y-1/2"
                                     style={{
-                                        backgroundColor: wire_colors.find((color) => String(color.id) === selectedColorAddId)?.hex || 'transparent',
+                                        backgroundColor: wire_colors.find((c) => String(c.id) === data.wire_color_add_id)?.hex || 'transparent',
                                     }}
                                 ></div>
                             )}
