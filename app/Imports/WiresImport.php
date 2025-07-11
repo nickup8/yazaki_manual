@@ -28,23 +28,28 @@ class WiresImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnFai
         $color3 = ($row['color3'] !== '0' && $row['color3'] !== '') ? WireColor::where('short', $row['color3'])->first() : null;
         $color4 = ($row['color4'] !== '0' && $row['color4'] !== '') ? WireColor::where('short', $row['color4'])->first() : null;
 
-        return new Wire([
-            'wire_key'         => $row['wirekey'],
-            'description'      => $row['name'],
-            'wire_type_id'     => $wireType?->id,
-            'cross_section'    => $row['crosssection'],
-            'wire_color_id_1'  => $color1?->id,
-            'wire_color_id_2'  => $color2?->id,
-            'wire_color_id_3'  => $color3?->id,
-            'wire_color_id_4'  => $color4?->id,
-        ]);
+        // Обновление или создание провода по wire_key
+        Wire::updateOrCreate(
+            ['wire_key' => $row['wirekey']],
+            [
+                'description'      => $row['name'],
+                'wire_type_id'     => $wireType?->id,
+                'cross_section'    => $row['crosssection'],
+                'wire_color_id_1'  => $color1?->id,
+                'wire_color_id_2'  => $color2?->id,
+                'wire_color_id_3'  => $color3?->id,
+                'wire_color_id_4'  => $color4?->id,
+            ]
+        );
+
+        return null; // не возвращаем объект модели, т.к. уже сохранили
     }
 
     public function rules(): array
     {
         $wireTypeNames = WireType::pluck('name')->toArray();
         $colorShorts = WireColor::pluck('short')->toArray();
-        $colorShorts[] = '0';
+        $colorShorts[] = '0'; // разрешаем 0 как отсутствие цвета
 
         return [
             '*.wirekey'      => ['required', 'string'],
@@ -58,7 +63,7 @@ class WiresImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnFai
         ];
     }
 
-    public function messages()
+    public function messages(): array
     {
         return [
             '*.wiretype.in'   => 'Тип провода ":input" не найден.',
@@ -72,7 +77,7 @@ class WiresImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnFai
     public function getCsvSettings(): array
     {
         return [
-            'delimiter' => ';',
+            'delimiter' => ';', // CSV с точкой с запятой
         ];
     }
 }

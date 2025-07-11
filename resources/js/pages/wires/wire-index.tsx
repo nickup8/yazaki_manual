@@ -6,6 +6,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem, Wire, WireColor, WireType } from '@/types';
 import { Head, Link, router, useForm } from '@inertiajs/react';
+import { AxiosProgressEvent } from 'axios';
 import { CloudDownload, Import, Loader2, Plus } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import WireTable from './wire-table';
@@ -16,6 +17,11 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/wires',
     },
 ];
+
+type UploadProgress = {
+    percentage: number;
+    total: number | null;
+};
 
 export default function WireIndex({
     wire_types,
@@ -36,8 +42,12 @@ export default function WireIndex({
 
     const [isSearching, setIsSearching] = useState(false);
     const [isResetting, setIsResetting] = useState(false);
-
-    const { post, progress, setData, processing, reset } = useForm<{ file: File | null }>({
+    const [processing, setProcessing] = useState(false);
+    const [progress, setProgress] = useState<UploadProgress>({
+        percentage: 0,
+        total: null,
+    });
+    const { post, setData, reset } = useForm<{ file: File | null }>({
         file: null,
     });
 
@@ -97,18 +107,38 @@ export default function WireIndex({
         const formData = new FormData();
         formData.append('file', file);
 
+        setProcessing(true);
+        setProgress({ percentage: 0, total: null });
+
         router.post(route('wires.import'), formData, {
             forceFormData: true,
             preserveScroll: true,
+
+            onProgress: (event?: AxiosProgressEvent) => {
+                if (!event || event.total === undefined) return;
+                const percent = Math.round((event.loaded * 100) / (event.total ?? 1));
+                setProgress({
+                    percentage: percent,
+                    total: event.total,
+                });
+            },
+
             onSuccess: () => {
                 router.visit('/wires', { only: ['wires'], preserveState: true });
             },
+
             onError: (errors) => {
                 console.error('Import errors:', errors);
                 alert('Ошибка при импорте файла: ' + Object.values(errors)[0]);
+            },
+
+            onFinish: () => {
+                setProcessing(false);
+                setProgress({ percentage: 0, total: null });
                 if (fileInputRef.current) {
                     fileInputRef.current.value = '';
                 }
+                reset();
             },
         });
     };
@@ -241,10 +271,16 @@ export default function WireIndex({
                 )}
             </div>
             {processing && (
-                <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/70 text-white">
+                <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black/70 text-white">
                     <Loader2 className="mb-4 h-12 w-12 animate-spin" />
                     <div className="mb-2 text-lg">Импорт файла...</div>
-                    <div className="text-xl font-bold">{progress ? `${progress.percentage}% (${progress.total} байт)` : 'Загрузка...'}</div>
+                    {progress.total !== null ? (
+                        <div className="text-xl font-bold">
+                            {progress.percentage}% ({Math.round(progress.total / 1024)} КБ)
+                        </div>
+                    ) : (
+                        <div className="text-xl font-bold">Загрузка...</div>
+                    )}
                 </div>
             )}
         </AppLayout>
