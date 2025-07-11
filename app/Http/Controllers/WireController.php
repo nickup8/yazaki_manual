@@ -16,4 +16,13 @@ class WireController extends Controller
             'wire_colors' => $wire_colors
         ]);
     }
+
+    public function create() {
+        $wire_types = WireType::all();
+        $wire_colors = WireColor::all();
+        return inertia('wires/wire-create', [
+            'wire_types' => $wire_types,
+            'wire_colors' => $wire_colors
+        ]);
+    }
 }

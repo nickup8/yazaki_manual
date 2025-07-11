@@ -14,6 +14,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
     Route::get('wires', [WireController::class, 'index'])->name('wires.index');
+    Route::get('wires/create', [WireController::class, 'create'])->name('wires.create');
 });
 
 require __DIR__.'/settings.php';

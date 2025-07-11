@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('wire_key')->unique();
             $table->string('description');
             $table->foreignId('wire_type_id')->constrained('wire_types')->onDelete('cascade');
-            $table->integer('cross_section');
+            $table->decimal('cross_section', 4, 2);
             $table->foreignId('wire_color_id_1')->constrained('wire_colors')->onDelete('cascade');
             $table->foreignId('wire_color_id_2')->nullable()->constrained('wire_colors')->onDelete('cascade');
             $table->foreignId('wire_color_id_3')->nullable()->constrained('wire_colors')->onDelete('cascade');
