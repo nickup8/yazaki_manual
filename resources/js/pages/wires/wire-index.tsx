@@ -2,11 +2,13 @@ import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem, WireColor, WireType } from '@/types';
+import { BreadcrumbItem, Wire, WireColor, WireType } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
-import { Loader2 } from 'lucide-react';
+import { CloudDownload, Loader2, Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import WireTable from './wire-table';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -24,7 +26,7 @@ export default function WireIndex({
     wire_types: WireType[];
     wire_colors: WireColor[];
     success: string;
-    wires: any[];
+    wires: { data: Wire[] };
 }) {
     const [wireKey, setWireKey] = useState('');
     const [description, setDescription] = useState('');
@@ -82,17 +84,32 @@ export default function WireIndex({
         setSelectedColorAddId('');
     };
 
-    console.log(wires);
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Провода" />
             <div className="flex h-full flex-1 flex-col overflow-x-auto rounded-xl p-4">
                 <Heading title="Провода" description="Управление проводами" />
                 <div className="mb-4">
-                    <Button variant="default">
-                        <Link href="/wires/create">Добавить провод</Link>
-                    </Button>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button variant="ghost" size="icon" className="border border-sidebar-border/50">
+                                <Link href="/wires/create">
+                                    <Plus />
+                                </Link>
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Создать</TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button variant="ghost" size="icon" className="ml-2 border border-sidebar-border/50">
+                                <Link href={route('wires.index', { all: true })}>
+                                    <CloudDownload />
+                                </Link>
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Показать все провода</TooltipContent>
+                    </Tooltip>
                 </div>
                 <form className="flex w-full flex-wrap gap-2 border-t border-b py-2" onSubmit={handleSubmit}>
                     <div>
@@ -170,9 +187,13 @@ export default function WireIndex({
                         )}
                     </div>
                 </form>
+                {wires.data && (
+                    <div className="mt-8">
+                        <div className="mb-2">Количество: {wires.data.length}</div>
+                        <WireTable wires={wires.data} />
+                    </div>
+                )}
             </div>
-
-            <pre>{JSON.stringify({ wires })}</pre>
         </AppLayout>
     );
 }

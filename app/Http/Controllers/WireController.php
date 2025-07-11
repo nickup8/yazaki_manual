@@ -13,17 +13,64 @@ use Inertia\ResponseFactory;
 
 class WireController extends Controller
 {
-    public function index() {
-        $wire_types = WireType::all();
-        $wire_colors = WireColor::all();
-        $wires = WireResource::collection(Wire::all());
+    public function index(Request $request)
+    {
+        $hasFilters = $request->filled('wire_type_id') ||
+                    $request->filled('wire_color_base_id') ||
+                    $request->filled('wire_color_add_id') ||
+                    $request->filled('wire_key') ||
+                    $request->filled('description') ||
+                    $request->filled('all');
+
+        $wires = collect(); // Пустая коллекция по умолчанию
+
+        if ($hasFilters) {
+            $query = Wire::query();
+
+            if ($request->filled('wire_type_id')) {
+                $query->where('wire_type_id', $request->input('wire_type_id'));
+            }
+
+            if ($request->filled('wire_color_base_id')) {
+                $query->where('wire_color_id_1', $request->input('wire_color_base_id'));
+            }
+
+            if ($request->filled('wire_color_add_id')) {
+                $query->where('wire_color_id_2', $request->input('wire_color_add_id'));
+            }
+
+            if ($request->filled('wire_key')) {
+                $query->where('wire_key', 'like', '%' . $request->input('wire_key') . '%');
+            }
+
+            if ($request->filled('description')) {
+                $query->where('description', 'like', '%' . $request->input('description') . '%');
+            }
+
+            // Можно оставить как маркер полного запроса
+            if ($request->filled('all')) {
+                // Ничего не делаем, просто возвращаем всё с учетом других условий
+            }
+
+            $wires = WireResource::collection($query->get());
+        }
+
         return inertia('wires/wire-index', [
-            'wire_types' => $wire_types,
-            'wire_colors' => $wire_colors,
+            'wire_types' => WireType::all(),
+            'wire_colors' => WireColor::all(),
+            'wires' => $wires,
+            'filters' => $request->only([
+                'wire_type_id',
+                'wire_color_base_id',
+                'wire_color_add_id',
+                'wire_key',
+                'description',
+                'all'
+            ]),
             'success' => session('success'),
-            'wires' => $wires
         ]);
     }
+
 
     public function create() {
         $wire_types = WireType::all();

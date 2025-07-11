@@ -61,6 +61,8 @@ export interface Wire {
     description: string;
     wire_type: WireType;
     wire_color_base: WireColor;
-    wire_color_add_id: WireColor | null;
+    wire_color_add: WireColor | null;
     cross_section: number;
+    created_at: string;
+    updated_at: string;
 }

@@ -21,13 +21,15 @@ class WireResource extends JsonResource
             'id' => $this->id,
             'wire_key' => $this->wire_key,
             'description' => $this->description,
-            'wire_type_id' => $this->wire_type,
+            'wire_type' => $this->wire_type,
             'wire_color_base' => $this->wire_color_base,
             'wire_color_add' => $this->wire_color_add,
             'cross_section' => $this->cross_section,
             'wire_color_add2' => $this->wire_color_add2,
             'wire_color_add3' => $this->wire_color_add3,
-            'wire_color_add4' => $this->wire_color_add4
+            'wire_color_add4' => $this->wire_color_add4,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at
         ];
     }
 }
