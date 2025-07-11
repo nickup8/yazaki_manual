@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem } from '@/types';
+import { BreadcrumbItem, WireColor, WireType } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
 import { Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -15,7 +15,17 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function WireIndex({ wire_types, wire_colors }: { wire_types: any[]; wire_colors: any[] }) {
+export default function WireIndex({
+    wire_types,
+    wire_colors,
+    success,
+    wires,
+}: {
+    wire_types: WireType[];
+    wire_colors: WireColor[];
+    success: string;
+    wires: any[];
+}) {
     const [wireKey, setWireKey] = useState('');
     const [description, setDescription] = useState('');
     const [selectedTypeId, setSelectedTypeId] = useState('');
@@ -71,6 +81,8 @@ export default function WireIndex({ wire_types, wire_colors }: { wire_types: any
         setSelectedColorBaseId('');
         setSelectedColorAddId('');
     };
+
+    console.log(wires);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -159,6 +171,8 @@ export default function WireIndex({ wire_types, wire_colors }: { wire_types: any
                     </div>
                 </form>
             </div>
+
+            <pre>{JSON.stringify({ wires })}</pre>
         </AppLayout>
     );
 }

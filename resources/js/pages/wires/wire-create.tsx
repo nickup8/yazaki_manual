@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem } from '@/types';
+import { BreadcrumbItem, WireColor, WireType } from '@/types';
 
 import { Head, router, useForm } from '@inertiajs/react';
 
@@ -15,7 +15,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Создание провода', href: '/wires/create' },
 ];
 
-export default function WireCreate({ wire_types, wire_colors, success }: { wire_types: any[]; wire_colors: any[]; success: string }) {
+export default function WireCreate({ wire_types, wire_colors, success }: { wire_types: WireType[]; wire_colors: WireColor[]; success: string }) {
     const { data, errors, processing, setData, post, reset } = useForm({
         wire_key: '',
         description: '',

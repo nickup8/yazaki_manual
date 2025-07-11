@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\WireStoreRequest;
+use App\Http\Resources\WireResource;
 use App\Models\Wire;
 use App\Models\WireColor;
 use App\Models\WireType;
@@ -15,10 +16,12 @@ class WireController extends Controller
     public function index() {
         $wire_types = WireType::all();
         $wire_colors = WireColor::all();
+        $wires = WireResource::collection(Wire::all());
         return inertia('wires/wire-index', [
             'wire_types' => $wire_types,
             'wire_colors' => $wire_colors,
-            'success' => session('success')
+            'success' => session('success'),
+            'wires' => $wires
         ]);
     }
 

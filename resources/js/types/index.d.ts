@@ -42,3 +42,25 @@ export interface User {
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...
 }
+
+export interface WireColor {
+    id: number;
+    name: string;
+    hex: string;
+    short: string;
+}
+
+export interface WireType {
+    id: number;
+    name: string;
+}
+
+export interface Wire {
+    id: number;
+    wire_key: string;
+    description: string;
+    wire_type: WireType;
+    wire_color_base: WireColor;
+    wire_color_add_id: WireColor | null;
+    cross_section: number;
+}
