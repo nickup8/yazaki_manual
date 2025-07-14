@@ -8,8 +8,30 @@ use Illuminate\Http\Request;
 
 class TerminalController extends Controller
 {
-    public function index() {
-        return inertia('terminals/terminal-index');
+   public function index(Request $request)
+    {
+        $hasFilters = $request->filled('terminal_key');
+        $shouldLoadData = $hasFilters || $request->boolean('all');
+
+        $terminals = [];
+
+        if ($shouldLoadData) {
+            $query = Terminal::query();
+
+            if ($hasFilters) {
+                $query->where('terminal_key', $request->input('terminal_key'));
+            }
+
+            $terminals = $query->paginate(10)->appends($request->all());
+        }
+
+        return inertia('terminals/terminal-index', [
+            'terminals' => $terminals,
+            'filters' => [
+                'terminal_key' => $request->input('terminal_key'),
+                'all' => $request->input('all'),
+            ],
+        ]);
     }
 
     public function create() {

@@ -8,6 +8,7 @@ import { Head, Link, router, useForm } from '@inertiajs/react';
 import { AxiosProgressEvent } from 'axios';
 import { CloudDownload, Import, Plus } from 'lucide-react';
 import { useRef, useState } from 'react';
+import TerminalTable from './terminal-table';
 
 type UploadProgress = {
     percentage: number;
@@ -20,8 +21,9 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/terminals',
     },
 ];
-export default function TerminalIndex() {
+export default function TerminalIndex({ terminals, pagination }: { terminals: any; pagination: any }) {
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const [terminal_key, setTerminalKey] = useState('');
     const [processing, setProcessing] = useState(false);
     const [progress, setProgress] = useState<UploadProgress>({
         percentage: 0,
@@ -29,6 +31,12 @@ export default function TerminalIndex() {
     });
 
     const { reset } = useForm();
+
+    const submit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        router.visit('/terminals', { only: ['terminal_key'], data: { terminal_key }, preserveState: true });
+    };
+
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
@@ -90,7 +98,7 @@ export default function TerminalIndex() {
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Button variant="ghost" size="icon" className="ml-2 border border-sidebar-border/50">
-                                <Link href={route('wires.index', { all: true })}>
+                                <Link href={route('terminals.index', { all: true })}>
                                     <CloudDownload />
                                 </Link>
                             </Button>
@@ -116,11 +124,16 @@ export default function TerminalIndex() {
                     </Tooltip>
                 </div>
                 <div>
-                    <form className="flex w-full gap-2 border-t border-b py-2">
-                        <Input type="search" placeholder="Код терминала" />
+                    <form className="flex w-full gap-2 border-t border-b py-2" onSubmit={submit}>
+                        <Input type="search" placeholder="Код терминала" onChange={(e) => setTerminalKey(e.target.value)} />
                         <Button type="submit">Найти</Button>
                     </form>
                 </div>
+                {terminals.data && (
+                    <div className="mt-4">
+                        <TerminalTable terminals={terminals.data} />
+                    </div>
+                )}
             </div>
         </AppLayout>
     );
