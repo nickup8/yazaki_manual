@@ -88,25 +88,30 @@ class WireController extends Controller
         return inertia('wires/wire-create', [
             'wire_types' => $wire_types,
             'wire_colors' => $wire_colors,
-            'success' => session('success')
+            'success' => session('success'),
+            
         ]);
     }
 
     public function store(WireStoreRequest $request)
-    {
-        $data = $request->validated();
-        
-        $wire = Wire::create([
+{
+    $data = $request->validated();
+
+    try {
+        Wire::create([
             'wire_key' => strtoupper($data['wire_key']),
             'description' => $data['description'],
             'wire_type_id' => $data['wire_type_id'],
             'wire_color_id_1' => $data['wire_color_base_id'],
             'wire_color_id_2' => $data['wire_color_add_id'],
-            'cross_section' => $data['cross_section']
+            'cross_section' => $data['cross_section'],
         ]);
 
-        return back()->with('success', 'Провод ' . $wire->wire_key . ' успешно создан');
+        return back()->with('success', 'Провод успешно создан');
+    } catch (\Exception $e) {
+        return back()->withErrors(['wire_key' => 'Такой код уже существует.'])->withInput();
     }
+}
 
     public function import(Request $request)
     {

@@ -21,6 +21,10 @@ const mainNavItems: NavItem[] = [
                 title: 'Провода',
                 href: '/wires',
             },
+            {
+                title: 'Терминалы',
+                href: '/terminals',
+            },
         ],
     },
 ];

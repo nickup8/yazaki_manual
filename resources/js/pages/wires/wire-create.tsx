@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem, WireColor, WireType } from '@/types';
 
-import { Head, router, useForm } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Провода', href: '/wires' },
@@ -25,7 +25,7 @@ export default function WireCreate({ wire_types, wire_colors, success }: { wire_
         cross_section: '',
     });
 
-    console.log(success);
+    console.log(errors);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -38,18 +38,16 @@ export default function WireCreate({ wire_types, wire_colors, success }: { wire_
             return;
         }
 
-        router.post(
-            route('wires.store'),
-            {
+        post(route('wires.store'), {
+            data: {
                 ...data,
                 cross_section: floatValue.toFixed(2),
             },
-            {
-                onSuccess: () => reset(),
-            },
-        );
+            onSuccess: () => reset(),
+        });
     };
 
+    console.log(errors);
     const handleReset = () => {
         reset();
     };
