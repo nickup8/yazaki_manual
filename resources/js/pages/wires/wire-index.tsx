@@ -1,4 +1,5 @@
 import Heading from '@/components/heading';
+import Pagination from '@/components/pagination';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -23,6 +24,27 @@ type UploadProgress = {
     total: number | null;
 };
 
+interface PaginatedWires {
+    data: Wire[];
+    meta: {
+        current_page: number;
+        last_page: number;
+        per_page: number;
+        total: number;
+        links: {
+            url: string | null;
+            label: string;
+            active: boolean;
+        }[];
+    };
+    links: {
+        first: string;
+        last: string;
+        next: string | null;
+        prev: string | null;
+    };
+}
+
 export default function WireIndex({
     wire_types,
     wire_colors,
@@ -32,7 +54,7 @@ export default function WireIndex({
     wire_types: WireType[];
     wire_colors: WireColor[];
     success: string;
-    wires: { data: Wire[] };
+    wires: PaginatedWires;
 }) {
     const [wireKey, setWireKey] = useState('');
     const [description, setDescription] = useState('');
@@ -263,11 +285,14 @@ export default function WireIndex({
                         )}
                     </div>
                 </form>
-                {wires.data && (
-                    <div className="mt-8">
-                        <div className="mb-2">Количество: {wires.data.length}</div>
+                {wires && (
+                    <>
+                        <div className="mt-8 mb-4 text-lg">
+                            Количество проводов <span>{wires.meta.total}</span>
+                        </div>
                         <WireTable wires={wires.data} />
-                    </div>
+                        <Pagination links={wires.meta.links} />
+                    </>
                 )}
             </div>
             {processing && (

@@ -9,6 +9,7 @@ use App\Models\Wire;
 use App\Models\WireColor;
 use App\Models\WireType;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Facades\Response;
 use Inertia\ResponseFactory;
 use Maatwebsite\Excel\Facades\Excel;
@@ -16,62 +17,69 @@ use Maatwebsite\Excel\Facades\Excel;
 class WireController extends Controller
 {
     public function index(Request $request)
-    {
-        $hasFilters = $request->filled('wire_type_id') ||
-                    $request->filled('wire_color_base_id') ||
-                    $request->filled('wire_color_add_id') ||
-                    $request->filled('wire_key') ||
-                    $request->filled('description') ||
-                    $request->filled('all');
+{
+    $hasFilters = $request->filled('wire_type_id') ||
+                  $request->filled('wire_color_base_id') ||
+                  $request->filled('wire_color_add_id') ||
+                  $request->filled('wire_key') ||
+                  $request->filled('description');
 
-        $wires = collect(); // Пустая коллекция по умолчанию
+    $shouldLoadData = $hasFilters || $request->filled('all');
 
-        if ($hasFilters) {
-            $query = Wire::query();
+    $wires = null;
+    $pagination = null;
 
-            if ($request->filled('wire_type_id')) {
-                $query->where('wire_type_id', $request->input('wire_type_id'));
-            }
+    if ($shouldLoadData) {
+        $query = Wire::query();
 
-            if ($request->filled('wire_color_base_id')) {
-                $query->where('wire_color_id_1', $request->input('wire_color_base_id'));
-            }
-
-            if ($request->filled('wire_color_add_id')) {
-                $query->where('wire_color_id_2', $request->input('wire_color_add_id'));
-            }
-
-            if ($request->filled('wire_key')) {
-                $query->where('wire_key', 'like', '%' . $request->input('wire_key') . '%');
-            }
-
-            if ($request->filled('description')) {
-                $query->where('description', 'like', '%' . $request->input('description') . '%');
-            }
-
-            // Можно оставить как маркер полного запроса
-            if ($request->filled('all')) {
-                // Ничего не делаем, просто возвращаем всё с учетом других условий
-            }
-
-            $wires = WireResource::collection($query->get());
+        if ($request->filled('wire_type_id')) {
+            $query->where('wire_type_id', $request->input('wire_type_id'));
         }
 
-        return inertia('wires/wire-index', [
-            'wire_types' => WireType::all(),
-            'wire_colors' => WireColor::all(),
-            'wires' => $wires,
-            'filters' => $request->only([
-                'wire_type_id',
-                'wire_color_base_id',
-                'wire_color_add_id',
-                'wire_key',
-                'description',
-                'all'
-            ]),
-            'success' => session('success'),
-        ]);
+        if ($request->filled('wire_color_base_id')) {
+            $query->where('wire_color_id_1', $request->input('wire_color_base_id'));
+        }
+
+        if ($request->filled('wire_color_add_id')) {
+            $query->where('wire_color_id_2', $request->input('wire_color_add_id'));
+        }
+
+        if ($request->filled('wire_key')) {
+            $query->where('wire_key', 'like', '%' . $request->input('wire_key') . '%');
+        }
+
+        if ($request->filled('description')) {
+            $query->where('description', 'like', '%' . $request->input('description') . '%');
+        }
+
+        $perPage = $request->input('per_page', 15);
+        $paginated = $query->paginate($perPage)->withQueryString();
+        $wires = WireResource::collection($paginated);
+        $pagination = [
+            'current_page' => $paginated->currentPage(),
+            'last_page' => $paginated->lastPage(),
+            'per_page' => $paginated->perPage(),
+            'total' => $paginated->total(),
+            'links' => $paginated->linkCollection(),
+        ];
     }
+
+    return inertia('wires/wire-index', [
+        'wire_types' => WireType::all(),
+        'wire_colors' => WireColor::all(),
+        'wires' => $wires,
+        'pagination' => $pagination,
+        'filters' => $request->only([
+            'wire_type_id',
+            'wire_color_base_id',
+            'wire_color_add_id',
+            'wire_key',
+            'description',
+            'all'
+        ]),
+        'success' => session('success'),
+    ]);
+}
 
 
     public function create() {

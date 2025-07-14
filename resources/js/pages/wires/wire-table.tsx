@@ -83,5 +83,9 @@ export default function WireTable({ wires }: { wires: Wire[] }) {
             ),
         },
     ];
-    return <DataTable columns={columns} data={wires} />;
+    return (
+        <>
+            <DataTable columns={columns} data={wires} />
+        </>
+    );
 }
