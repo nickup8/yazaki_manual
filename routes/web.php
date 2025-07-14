@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\TerminalController;
 use App\Http\Controllers\WireController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -18,6 +19,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('wires/store', [WireController::class, 'store'])->name('wires.store');
 
     Route::post('/wires/import', [WireController::class, 'import'])->name('wires.import');
+
+    Route::get('terminals', [TerminalController::class, 'index'])->name('terminals.index');
+
+    Route::get('/terminals/create', [TerminalController::class, 'create'])->name('terminals.create');
+
+    Route::post('/terminals/store', [TerminalController::class, 'store'])->name('terminals.store');
 });
 
 require __DIR__.'/settings.php';
