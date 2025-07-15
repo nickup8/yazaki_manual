@@ -44,6 +44,11 @@ export function AppSidebar() {
                         href: '/terminals',
                         isActive: url.startsWith('/terminals'),
                     },
+                    {
+                        title: 'Уплотнители',
+                        href: '/seals',
+                        isActive: url.startsWith('/seals'),
+                    },
                 ],
             },
         ],

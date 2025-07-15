@@ -13,7 +13,9 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 class TerminalsImport implements ToCollection, WithCustomCsvSettings, WithHeadingRow
 {
     public int $successCount = 0;
+
     public int $skippedCount = 0;
+
     public array $errors = [];
 
     public function collection(Collection $rows)
@@ -38,7 +40,8 @@ class TerminalsImport implements ToCollection, WithCustomCsvSettings, WithHeadin
 
             if ($validator->fails()) {
                 $this->skippedCount++;
-                $this->errors[] = "Строка $line: " . implode(', ', $validator->errors()->all());
+                $this->errors[] = "Строка $line: ".implode(', ', $validator->errors()->all());
+
                 continue;
             }
 
@@ -56,9 +59,9 @@ class TerminalsImport implements ToCollection, WithCustomCsvSettings, WithHeadin
                 $this->successCount++;
             } catch (\Exception $e) {
                 // Логгирование ошибок на всякий случай
-                Log::error("Ошибка в строке $line: " . $e->getMessage());
+                Log::error("Ошибка в строке $line: ".$e->getMessage());
                 $this->skippedCount++;
-                $this->errors[] = "Строка $line: ошибка при сохранении — " . $e->getMessage();
+                $this->errors[] = "Строка $line: ошибка при сохранении — ".$e->getMessage();
             }
         }
     }

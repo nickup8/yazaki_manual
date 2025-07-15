@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SealController;
 use App\Http\Controllers\TerminalController;
 use App\Http\Controllers\WireController;
 use Illuminate\Support\Facades\Route;
@@ -27,6 +28,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/terminals/store', [TerminalController::class, 'store'])->name('terminals.store');
 
     Route::post('/terminals/import', [TerminalController::class, 'import'])->name('terminals.import');
+
+    Route::get('seals', [SealController::class, 'index'])->name('seals.index');
+
+    Route::get('seals/create', [SealController::class, 'create'])->name('seals.create');
+
+    Route::post('seals/store', [SealController::class, 'store'])->name('seals.store');
 });
 
 require __DIR__.'/settings.php';

@@ -68,18 +68,18 @@ class TerminalController extends Controller
     }
 
     public function import(Request $request)
-{
-    $request->validate([
-        'file' => 'required|file|mimes:csv,txt,xlsx',
-    ]);
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:csv,txt,xlsx',
+        ]);
 
-    $import = new TerminalsImport();
-    Excel::import($import, $request->file('file'));
+        $import = new TerminalsImport;
+        Excel::import($import, $request->file('file'));
 
-    return back()->with([
-        'successCount' => $import->successCount,
-        'skippedCount' => $import->skippedCount,
-        'importErrors' => $import->errors,
-    ]);
-}
+        return back()->with([
+            'successCount' => $import->successCount,
+            'skippedCount' => $import->skippedCount,
+            'importErrors' => $import->errors,
+        ]);
+    }
 }

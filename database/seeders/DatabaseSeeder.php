@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Enums\RolesEnum;
+use App\Models\SealColor;
 use App\Models\User;
 use App\Models\WireColor;
 use App\Models\WireType;
@@ -23,7 +24,6 @@ class DatabaseSeeder extends Seeder
 
         // Отсортированные по алфавиту типы проводов
         $wire_types = [
-            'Не определено',
             'PVAM',
             'PVACA',
             'PRFLRYB',
@@ -40,15 +40,15 @@ class DatabaseSeeder extends Seeder
 
         // Цвета проводов с HEX
         $wire_colors = [
-            ['name' => 'Черный',          'short' => 'BK', 'hex' => '#000000'], // Масса (GND)
-            ['name' => 'Красный',         'short' => 'RD', 'hex' => '#FF0000'], // Питание +12V
-            ['name' => 'Жёлтый',          'short' => 'YE', 'hex' => '#FFFF00'], // Постоянное питание (память)
-            ['name' => 'Оранжевый',       'short' => 'OG', 'hex' => '#FFA500'], // Подсветка/ACC
-            ['name' => 'Голубой',         'short' => 'BU', 'hex' => '#ADD8E6'], // Управление аксессуарами
-            ['name' => 'Коричневый',      'short' => 'BN', 'hex' => '#A52A2A'], // Альтернативная масса / mute
-            ['name' => 'Зелёный',         'short' => 'GN', 'hex' => '#008000'], // Сигнал, аксессуары
-            ['name' => 'Белый',           'short' => 'WH', 'hex' => '#FFFFFF'], // Мультимедиа / CAN
-            ['name' => 'Фиолетовый',      'short' => 'VT', 'hex' => '#800080'], // CAN, speed, и т.п.
+            ['name' => 'Черный',          'short' => 'BK', 'hex' => '#000000'], 
+            ['name' => 'Красный',         'short' => 'RD', 'hex' => '#FF0000'], 
+            ['name' => 'Жёлтый',          'short' => 'YE', 'hex' => '#FFFF00'], 
+            ['name' => 'Оранжевый',       'short' => 'OG', 'hex' => '#FFA500'], 
+            ['name' => 'Голубой',         'short' => 'BU', 'hex' => '#ADD8E6'], 
+            ['name' => 'Коричневый',      'short' => 'BN', 'hex' => '#A52A2A'], 
+            ['name' => 'Зелёный',         'short' => 'GN', 'hex' => '#008000'], 
+            ['name' => 'Белый',           'short' => 'WH', 'hex' => '#FFFFFF'], 
+            ['name' => 'Фиолетовый',      'short' => 'VT', 'hex' => '#800080'],
             ['name' => 'Серый',           'short' => 'GY', 'hex' => '#808080'],
             ['name' => 'Розовый',         'short' => 'PK', 'hex' => '#FFC0CB'],
             ['name' => 'Светло зелёный',  'short' => 'LG', 'hex' => '#90EE90'],
@@ -72,5 +72,26 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password'),
 
         ])->assignRole([RolesEnum::ENGINEER->value, RolesEnum::USER_MANAGER->value]);
+
+        $seal_colors = [
+    ['name' => 'Зеленый',     'short' => 'GN', 'hex' => '#006400'], 
+    ['name' => 'Синий',       'short' => 'BU', 'hex' => '#0000CD'], 
+    ['name' => 'Белый',       'short' => 'WH', 'hex' => '#F8F8FF'], 
+    ['name' => 'Жёлтый',      'short' => 'YE', 'hex' => '#FFD700'], 
+    ['name' => 'Серый',       'short' => 'GY', 'hex' => '#A9A9A9'], 
+    ['name' => 'Коричневый',  'short' => 'BN', 'hex' => '#8B4513'], 
+    ['name' => 'Чёрный',      'short' => 'BK', 'hex' => '#1C1C1C'], 
+    ['name' => 'Красный',     'short' => 'RD', 'hex' => '#B22222'],
+    ['name' => 'Оранжевый',   'short' => 'OG', 'hex' => '#FF8C00'],
+    ['name' => 'Фиолетовый',  'short' => 'VT', 'hex' => '#9370DB'],
+];
+
+        foreach ($seal_colors as $seal_color) {
+            SealColor::create([
+                'color_name' => $seal_color['name'],
+                'color_hex' => $seal_color['hex'],
+                'color_short' => $seal_color['short'],
+            ]);
+        }
     }
 }
