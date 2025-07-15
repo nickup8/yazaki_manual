@@ -2,32 +2,10 @@ import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import { Book, BookOpen, Folder, LayoutGrid } from 'lucide-react';
+import { useMemo } from 'react';
 import AppLogo from './app-logo';
-
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: '/dashboard',
-        icon: LayoutGrid,
-    },
-    {
-        title: 'Справочники',
-        href: '',
-        icon: Book,
-        items: [
-            {
-                title: 'Провода',
-                href: '/wires',
-            },
-            {
-                title: 'Терминалы',
-                href: '/terminals',
-            },
-        ],
-    },
-];
 
 const footerNavItems: NavItem[] = [
     {
@@ -43,6 +21,34 @@ const footerNavItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
+    const { url } = usePage();
+    const mainNavItems: NavItem[] = useMemo(
+        () => [
+            {
+                title: 'Dashboard',
+                href: '/dashboard',
+                icon: LayoutGrid,
+            },
+            {
+                title: 'Справочники',
+                href: '',
+                icon: Book,
+                items: [
+                    {
+                        title: 'Провода',
+                        href: '/wires',
+                        isActive: url.startsWith('/wires'),
+                    },
+                    {
+                        title: 'Терминалы',
+                        href: '/terminals',
+                        isActive: url.startsWith('/terminals'),
+                    },
+                ],
+            },
+        ],
+        [url],
+    );
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
