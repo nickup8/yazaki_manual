@@ -67,7 +67,6 @@ class TerminalsImport implements ToCollection, WithCustomCsvSettings, WithHeadin
     {
         return [
             'delimiter' => ';',
-            'input_encoding' => 'UTF-8',
         ];
     }
 }

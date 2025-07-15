@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TerminalStoreRequest;
+use App\Http\Resources\TerminalResource;
 use App\Imports\TerminalsImport;
 use App\Models\Terminal;
 use Illuminate\Http\Request;
@@ -28,7 +29,7 @@ class TerminalController extends Controller
         }
 
         return inertia('terminals/terminal-index', [
-            'terminals' => $terminals,
+            'terminals' => TerminalResource::collection($terminals),
             'filters' => [
                 'terminal_key' => $request->input('terminal_key'),
                 'all' => $request->input('all'),

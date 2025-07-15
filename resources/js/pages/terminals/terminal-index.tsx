@@ -1,4 +1,5 @@
 import Heading from '@/components/heading';
+import Pagination from '@/components/pagination';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
@@ -29,6 +30,8 @@ export default function TerminalIndex({ terminals, pagination }: { terminals: an
         percentage: 0,
         total: null,
     });
+
+    console.log(terminals);
 
     const { reset } = useForm();
 
@@ -136,10 +139,14 @@ export default function TerminalIndex({ terminals, pagination }: { terminals: an
                         <Button type="submit">Найти</Button>
                     </form>
                 </div>
-                {terminals.data && (
-                    <div className="mt-4">
+                {terminals.data.length > 0 && (
+                    <>
+                        <div className="mt-8 mb-4 text-lg">
+                            Количество проводов <span>{terminals.meta.total}</span>
+                        </div>
                         <TerminalTable terminals={terminals.data} />
-                    </div>
+                        <Pagination links={terminals.meta.links} />
+                    </>
                 )}
             </div>
 
