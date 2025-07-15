@@ -6,19 +6,19 @@ use App\Models\Wire;
 use App\Models\WireColor;
 use App\Models\WireType;
 use Illuminate\Validation\Rule;
-use Maatwebsite\Excel\Concerns\ToModel;
-use Maatwebsite\Excel\Concerns\WithValidation;
 use Maatwebsite\Excel\Concerns\Importable;
-use Maatwebsite\Excel\Concerns\WithHeadingRow;
-use Maatwebsite\Excel\Concerns\SkipsOnFailure;
-use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Maatwebsite\Excel\Concerns\SkipsErrors;
+use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Maatwebsite\Excel\Concerns\SkipsOnError;
+use Maatwebsite\Excel\Concerns\SkipsOnFailure;
+use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithValidation;
 
-class WiresImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnFailure, SkipsOnError, WithCustomCsvSettings
+class WiresImport implements SkipsOnError, SkipsOnFailure, ToModel, WithCustomCsvSettings, WithHeadingRow, WithValidation
 {
-    use Importable, SkipsFailures, SkipsErrors;
+    use Importable, SkipsErrors, SkipsFailures;
 
     public function model(array $row)
     {
@@ -32,13 +32,13 @@ class WiresImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnFai
         Wire::updateOrCreate(
             ['wire_key' => $row['wirekey']],
             [
-                'description'      => $row['name'],
-                'wire_type_id'     => $wireType?->id,
-                'cross_section'    => $row['crosssection'],
-                'wire_color_id_1'  => $color1?->id,
-                'wire_color_id_2'  => $color2?->id,
-                'wire_color_id_3'  => $color3?->id,
-                'wire_color_id_4'  => $color4?->id,
+                'description' => $row['name'],
+                'wire_type_id' => $wireType?->id,
+                'cross_section' => $row['crosssection'],
+                'wire_color_id_1' => $color1?->id,
+                'wire_color_id_2' => $color2?->id,
+                'wire_color_id_3' => $color3?->id,
+                'wire_color_id_4' => $color4?->id,
             ]
         );
 
@@ -52,25 +52,25 @@ class WiresImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnFai
         $colorShorts[] = '0'; // разрешаем 0 как отсутствие цвета
 
         return [
-            '*.wirekey'      => ['required', 'string'],
-            '*.name'         => ['required', 'string'],
-            '*.wiretype'     => ['required', Rule::in($wireTypeNames)],
+            '*.wirekey' => ['required', 'string'],
+            '*.name' => ['required', 'string'],
+            '*.wiretype' => ['required', Rule::in($wireTypeNames)],
             '*.crosssection' => ['required', 'numeric'],
-            '*.color1'       => ['nullable', Rule::in($colorShorts)],
-            '*.color2'       => ['nullable', Rule::in($colorShorts)],
-            '*.color3'       => ['nullable', Rule::in($colorShorts)],
-            '*.color4'       => ['nullable', Rule::in($colorShorts)],
+            '*.color1' => ['nullable', Rule::in($colorShorts)],
+            '*.color2' => ['nullable', Rule::in($colorShorts)],
+            '*.color3' => ['nullable', Rule::in($colorShorts)],
+            '*.color4' => ['nullable', Rule::in($colorShorts)],
         ];
     }
 
     public function messages(): array
     {
         return [
-            '*.wiretype.in'   => 'Тип провода ":input" не найден.',
-            '*.color1.in'     => 'Цвет 1 ":input" не найден.',
-            '*.color2.in'     => 'Цвет 2 ":input" не найден.',
-            '*.color3.in'     => 'Цвет 3 ":input" не найден.',
-            '*.color4.in'     => 'Цвет 4 ":input" не найден.',
+            '*.wiretype.in' => 'Тип провода ":input" не найден.',
+            '*.color1.in' => 'Цвет 1 ":input" не найден.',
+            '*.color2.in' => 'Цвет 2 ":input" не найден.',
+            '*.color3.in' => 'Цвет 3 ":input" не найден.',
+            '*.color4.in' => 'Цвет 4 ":input" не найден.',
         ];
     }
 

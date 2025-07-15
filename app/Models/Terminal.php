@@ -13,5 +13,3 @@ class Terminal extends Model
         'terminal_supplier',
     ];
 }
-
-

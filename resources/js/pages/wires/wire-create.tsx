@@ -25,8 +25,6 @@ export default function WireCreate({ wire_types, wire_colors, success }: { wire_
         cross_section: '',
     });
 
-    console.log(errors);
-
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -47,7 +45,6 @@ export default function WireCreate({ wire_types, wire_colors, success }: { wire_
         });
     };
 
-    console.log(errors);
     const handleReset = () => {
         reset();
     };

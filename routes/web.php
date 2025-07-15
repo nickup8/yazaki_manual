@@ -25,6 +25,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/terminals/create', [TerminalController::class, 'create'])->name('terminals.create');
 
     Route::post('/terminals/store', [TerminalController::class, 'store'])->name('terminals.store');
+
+    Route::post('/terminals/import', [TerminalController::class, 'import'])->name('terminals.import');
 });
 
 require __DIR__.'/settings.php';

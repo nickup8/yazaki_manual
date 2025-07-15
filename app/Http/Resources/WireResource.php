@@ -7,7 +7,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class WireResource extends JsonResource
 {
-
     public static $wrap = false;
 
     /**
@@ -29,7 +28,7 @@ class WireResource extends JsonResource
             'wire_color_add3' => $this->wire_color_add3,
             'wire_color_add4' => $this->wire_color_add4,
             'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at
+            'updated_at' => $this->updated_at,
         ];
     }
 }

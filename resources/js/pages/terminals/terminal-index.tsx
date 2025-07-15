@@ -6,7 +6,7 @@ import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import { AxiosProgressEvent } from 'axios';
-import { CloudDownload, Import, Plus } from 'lucide-react';
+import { CloudDownload, Import, Loader2, Plus } from 'lucide-react';
 import { useRef, useState } from 'react';
 import TerminalTable from './terminal-table';
 
@@ -34,7 +34,14 @@ export default function TerminalIndex({ terminals, pagination }: { terminals: an
 
     const submit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        router.visit('/terminals', { only: ['terminal_key'], data: { terminal_key }, preserveState: true });
+        router.get(
+            '/terminals',
+            { terminal_key },
+            {
+                preserveState: true,
+                preserveScroll: true,
+            },
+        );
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,7 +54,7 @@ export default function TerminalIndex({ terminals, pagination }: { terminals: an
         setProcessing(true);
         setProgress({ percentage: 0, total: null });
 
-        router.post(route('wires.import'), formData, {
+        router.post(route('terminals.import'), formData, {
             forceFormData: true,
             preserveScroll: true,
 
@@ -61,7 +68,7 @@ export default function TerminalIndex({ terminals, pagination }: { terminals: an
             },
 
             onSuccess: () => {
-                router.visit('/wires', { only: ['wires'], preserveState: true });
+                router.visit('/terminals', { only: ['terminals'], preserveState: true });
             },
 
             onError: (errors) => {
@@ -135,6 +142,20 @@ export default function TerminalIndex({ terminals, pagination }: { terminals: an
                     </div>
                 )}
             </div>
+
+            {processing && (
+                <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black/70 text-white">
+                    <Loader2 className="mb-4 h-12 w-12 animate-spin" />
+                    <div className="mb-2 text-lg">Импорт файла...</div>
+                    {progress.total !== null ? (
+                        <div className="text-xl font-bold">
+                            {progress.percentage}% ({Math.round(progress.total / 1024)} КБ)
+                        </div>
+                    ) : (
+                        <div className="text-xl font-bold">Загрузка...</div>
+                    )}
+                </div>
+            )}
         </AppLayout>
     );
 }

@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TerminalStoreRequest;
+use App\Imports\TerminalsImport;
 use App\Models\Terminal;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TerminalController extends Controller
 {
-   public function index(Request $request)
+    public function index(Request $request)
     {
         $hasFilters = $request->filled('terminal_key');
         $shouldLoadData = $hasFilters || $request->boolean('all');
@@ -34,11 +36,12 @@ class TerminalController extends Controller
         ]);
     }
 
-    public function create() {
+    public function create()
+    {
         return inertia('terminals/terminal-create', [
-            'success'=> session('success')
+            'success' => session('success'),
         ]);
-        
+
     }
 
     public function store(TerminalStoreRequest $request)
@@ -49,8 +52,8 @@ class TerminalController extends Controller
 
         if ($terminalRequest) {
             return redirect()->route('terminals.create')
-                    ->withErrors(['terminal_key' => 'Такой код уже существует.'])
-                    ->withInput();
+                ->withErrors(['terminal_key' => 'Такой код уже существует.'])
+                ->withInput();
         }
 
         $terminal = Terminal::create([
@@ -60,6 +63,22 @@ class TerminalController extends Controller
             'description' => $data['description'],
         ]);
 
-        return back()->with('success', 'Терминал ' . $terminal->terminal_key . ' успешно создан');
+        return back()->with('success', 'Терминал '.$terminal->terminal_key.' успешно создан');
     }
+
+    public function import(Request $request)
+{
+    $request->validate([
+        'file' => 'required|file|mimes:csv,txt,xlsx',
+    ]);
+
+    $import = new TerminalsImport();
+    Excel::import($import, $request->file('file'));
+
+    return back()->with([
+        'successCount' => $import->successCount,
+        'skippedCount' => $import->skippedCount,
+        'importErrors' => $import->errors,
+    ]);
+}
 }

@@ -25,5 +25,4 @@ enum RolesEnum: string
             self::USER_MANAGER => 'Менеджер пользователей',
         };
     }
-
 }

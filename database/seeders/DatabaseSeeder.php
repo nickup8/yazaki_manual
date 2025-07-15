@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
+use App\Enums\RolesEnum;
 use App\Models\User;
 use App\Models\WireColor;
 use App\Models\WireType;
-use App\Enums\RolesEnum;
+use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
@@ -40,29 +40,29 @@ class DatabaseSeeder extends Seeder
 
         // Цвета проводов с HEX
         $wire_colors = [
-    ['name' => 'Черный',          'short' => 'BK', 'hex' => '#000000'], // Масса (GND)
-    ['name' => 'Красный',         'short' => 'RD', 'hex' => '#FF0000'], // Питание +12V
-    ['name' => 'Жёлтый',          'short' => 'YE', 'hex' => '#FFFF00'], // Постоянное питание (память)
-    ['name' => 'Оранжевый',       'short' => 'OG', 'hex' => '#FFA500'], // Подсветка/ACC
-    ['name' => 'Голубой',         'short' => 'BU', 'hex' => '#ADD8E6'], // Управление аксессуарами
-    ['name' => 'Коричневый',      'short' => 'BN', 'hex' => '#A52A2A'], // Альтернативная масса / mute
-    ['name' => 'Зелёный',         'short' => 'GN', 'hex' => '#008000'], // Сигнал, аксессуары
-    ['name' => 'Белый',           'short' => 'WH', 'hex' => '#FFFFFF'], // Мультимедиа / CAN
-    ['name' => 'Фиолетовый',      'short' => 'VT', 'hex' => '#800080'], // CAN, speed, и т.п.
-    ['name' => 'Серый',           'short' => 'GY', 'hex' => '#808080'],
-    ['name' => 'Розовый',         'short' => 'PK', 'hex' => '#FFC0CB'],
-    ['name' => 'Светло зелёный',  'short' => 'LG', 'hex' => '#90EE90'],
-    ['name' => 'Бирюзовый',       'short' => 'TQ', 'hex' => '#40E0D0'],
-    ['name' => 'Бежевый',         'short' => 'BG', 'hex' => '#F5F5DC'],
-    ['name' => 'Лавандовый',      'short' => 'LV', 'hex' => '#E6E6FA'],
-    ['name' => 'Небесно-голубой', 'short' => 'SB', 'hex' => '#87CEEB'],
-];
+            ['name' => 'Черный',          'short' => 'BK', 'hex' => '#000000'], // Масса (GND)
+            ['name' => 'Красный',         'short' => 'RD', 'hex' => '#FF0000'], // Питание +12V
+            ['name' => 'Жёлтый',          'short' => 'YE', 'hex' => '#FFFF00'], // Постоянное питание (память)
+            ['name' => 'Оранжевый',       'short' => 'OG', 'hex' => '#FFA500'], // Подсветка/ACC
+            ['name' => 'Голубой',         'short' => 'BU', 'hex' => '#ADD8E6'], // Управление аксессуарами
+            ['name' => 'Коричневый',      'short' => 'BN', 'hex' => '#A52A2A'], // Альтернативная масса / mute
+            ['name' => 'Зелёный',         'short' => 'GN', 'hex' => '#008000'], // Сигнал, аксессуары
+            ['name' => 'Белый',           'short' => 'WH', 'hex' => '#FFFFFF'], // Мультимедиа / CAN
+            ['name' => 'Фиолетовый',      'short' => 'VT', 'hex' => '#800080'], // CAN, speed, и т.п.
+            ['name' => 'Серый',           'short' => 'GY', 'hex' => '#808080'],
+            ['name' => 'Розовый',         'short' => 'PK', 'hex' => '#FFC0CB'],
+            ['name' => 'Светло зелёный',  'short' => 'LG', 'hex' => '#90EE90'],
+            ['name' => 'Бирюзовый',       'short' => 'TQ', 'hex' => '#40E0D0'],
+            ['name' => 'Бежевый',         'short' => 'BG', 'hex' => '#F5F5DC'],
+            ['name' => 'Лавандовый',      'short' => 'LV', 'hex' => '#E6E6FA'],
+            ['name' => 'Небесно-голубой', 'short' => 'SB', 'hex' => '#87CEEB'],
+        ];
 
         foreach ($wire_colors as $wire_color) {
             WireColor::create([
                 'name' => $wire_color['name'],
                 'hex' => $wire_color['hex'],
-                'short' => $wire_color['short']
+                'short' => $wire_color['short'],
             ]);
         }
 
@@ -70,9 +70,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Николай Сироткин',
             'email' => 'nickup8@yandex.ru',
             'password' => bcrypt('password'),
-            
+
         ])->assignRole([RolesEnum::ENGINEER->value, RolesEnum::USER_MANAGER->value]);
     }
-
-    
 }

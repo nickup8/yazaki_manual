@@ -22,7 +22,7 @@ class TerminalStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'terminal_key' => ['required', 'string', 'max:255', ],
+            'terminal_key' => ['required', 'string', 'max:255'],
             'terminal_spn' => ['nullable', 'string', 'max:255'],
             'terminal_supplier' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:255'],
