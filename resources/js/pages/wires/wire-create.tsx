@@ -1,14 +1,12 @@
 import Heading from '@/components/heading';
-import HeadingSmall from '@/components/heading-small';
-import InputError from '@/components/input-error';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem, WireColor, WireType } from '@/types';
-
 import { Head, useForm } from '@inertiajs/react';
+
+import FormField from '@/components/form-field';
+import SelectField from '@/components/select-field';
+import { Button } from '@/components/ui/button';
+import WirePreview from './wire-preview';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Провода', href: '/wires' },
@@ -36,166 +34,120 @@ export default function WireCreate({ wire_types, wire_colors, success }: { wire_
             return;
         }
 
+        // Обновляем cross_section в локальном состоянии в формате с двумя знаками после запятой
+        setData('cross_section', floatValue.toFixed(2));
+
+        // Отправляем форму
         post(route('wires.store'), {
-            data: {
-                ...data,
-                cross_section: floatValue.toFixed(2),
-            },
             onSuccess: () => reset(),
         });
     };
 
-    const handleReset = () => {
-        reset();
-    };
+    const handleReset = () => reset();
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Создание провода" />
             <div className="flex h-full flex-1 flex-col overflow-x-auto rounded-xl p-4">
                 <Heading title="Создание провода" />
+
                 <form className="flex w-full flex-col gap-4" onSubmit={handleSubmit}>
                     <div className="flex gap-2">
-                        <div className="w-[280px]">
-                            <Label htmlFor="wire_key">Код провода</Label>
-                            <Input
-                                id="wire_key"
-                                type="text"
-                                value={data.wire_key}
-                                onChange={(e) => setData('wire_key', e.target.value)}
-                                disabled={processing}
-                            />
-                            <InputError message={errors.wire_key} />
-                        </div>
-                        <div className="w-[280px]">
-                            <Label htmlFor="cross_section">Сечение</Label>
-                            <Input
-                                id="cross_section"
-                                type="text"
-                                value={data.cross_section}
-                                onChange={(e) => setData('cross_section', e.target.value)}
-                                disabled={processing}
-                            />
-                            <InputError message={errors.cross_section} />
-                        </div>
-                        <div className="flex-1">
-                            <Label htmlFor="description">Описание</Label>
-                            <Input
-                                id="description"
-                                type="text"
-                                value={data.description}
-                                onChange={(e) => setData('description', e.target.value)}
-                                disabled={processing}
-                            />
-                            <InputError message={errors.description} />
-                        </div>
+                        <FormField
+                            id="wire_key"
+                            label="Код провода"
+                            value={data.wire_key}
+                            onChange={(val) => setData('wire_key', val)}
+                            disabled={processing}
+                            error={errors.wire_key}
+                        />
+
+                        <FormField
+                            id="cross_section"
+                            label="Сечение"
+                            value={data.cross_section}
+                            onChange={(val) => setData('cross_section', val)}
+                            disabled={processing}
+                            error={errors.cross_section}
+                        />
+
+                        <FormField
+                            id="description"
+                            label="Описание"
+                            value={data.description}
+                            onChange={(val) => setData('description', val)}
+                            disabled={processing}
+                            error={errors.description}
+                        />
                     </div>
 
                     <div className="flex gap-2">
-                        <div>
-                            <Label htmlFor="wire_type">Тип провода</Label>
-                            <Select value={data.wire_type_id} onValueChange={(value) => setData('wire_type_id', value)} disabled={processing}>
-                                <SelectTrigger className="w-[280px]">
-                                    <SelectValue placeholder="Выберите тип провода" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {wire_types.map((type) => (
-                                        <SelectItem key={type.id} value={String(type.id)}>
-                                            {type.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            <InputError message={errors.wire_type_id} />
-                        </div>
+                        <SelectField
+                            id="wire_type"
+                            label="Тип провода"
+                            value={data.wire_type_id}
+                            onChange={(val) => setData('wire_type_id', val)}
+                            options={wire_types.map((type) => ({
+                                value: String(type.id),
+                                label: type.name,
+                            }))}
+                            disabled={processing}
+                            error={errors.wire_type_id}
+                        />
 
-                        <div>
-                            <Label htmlFor="color_base">Базовый цвет</Label>
-                            <Select
-                                value={data.wire_color_base_id}
-                                onValueChange={(value) => setData('wire_color_base_id', value)}
-                                disabled={processing}
-                            >
-                                <SelectTrigger className="w-[280px]">
-                                    <SelectValue placeholder="Базовый цвет" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {wire_colors.map((color) => (
-                                        <SelectItem key={color.id} value={String(color.id)}>
-                                            <span className="flex items-center">
-                                                <span className="mr-2 inline-block h-4 w-4 border" style={{ backgroundColor: color.hex }} />
-                                                <span>{color.name}</span>
-                                            </span>
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            <InputError message={errors.wire_color_base_id} />
-                        </div>
+                        <SelectField
+                            id="color_base"
+                            label="Базовый цвет"
+                            value={data.wire_color_base_id}
+                            onChange={(val) => setData('wire_color_base_id', val)}
+                            options={wire_colors.map((color) => ({
+                                value: String(color.id),
+                                label: (
+                                    <span className="flex items-center">
+                                        <span className="mr-2 inline-block h-4 w-4 rounded-sm border" style={{ backgroundColor: color.hex }} />
+                                        <span>{color.name}</span>
+                                    </span>
+                                ),
+                            }))}
+                            disabled={processing}
+                            error={errors.wire_color_base_id}
+                        />
 
-                        <div>
-                            <Label htmlFor="color_add">Доп. цвет</Label>
-                            <Select
-                                value={data.wire_color_add_id}
-                                onValueChange={(value) => setData('wire_color_add_id', value)}
-                                disabled={processing}
-                            >
-                                <SelectTrigger className="w-[280px]">
-                                    <SelectValue placeholder="Доп. цвет" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {wire_colors.map((color) => (
-                                        <SelectItem key={color.id} value={String(color.id)}>
-                                            <span className="flex items-center">
-                                                <span className="mr-2 inline-block h-4 w-4 border" style={{ backgroundColor: color.hex }} />
-                                                <span>{color.name}</span>
-                                            </span>
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
+                        <SelectField
+                            id="color_add"
+                            label="Доп. цвет"
+                            value={data.wire_color_add_id}
+                            onChange={(val) => setData('wire_color_add_id', val)}
+                            options={wire_colors.map((color) => ({
+                                value: String(color.id),
+                                label: (
+                                    <span className="flex items-center">
+                                        <span className="mr-2 inline-block h-4 w-4 rounded-sm border" style={{ backgroundColor: color.hex }} />
+                                        <span>{color.name}</span>
+                                    </span>
+                                ),
+                            }))}
+                            disabled={processing}
+                            error={errors.wire_color_add_id}
+                        />
                     </div>
 
                     <div className="flex gap-2">
                         <Button variant="default" type="submit" disabled={processing}>
                             Создать
                         </Button>
-                        <Button variant="outline" type="button" onClick={handleReset}>
+                        <Button variant="outline" type="button" onClick={handleReset} disabled={processing}>
                             Сбросить
                         </Button>
                     </div>
                 </form>
 
-                <div className="mt-8">
-                    <HeadingSmall
-                        title="Пример отображения"
-                        description="Так провод будет выглядеть на схеме. Начните заполнять поля для создания провода"
-                    />
-                    <div className="mt-4">
-                        <div className="mb-0.5 text-center">
-                            {data.description ? data.description : <span className="text-sm text-gray-500">Описание провода</span>}
-                        </div>
-                        <div className="relative flex w-full items-center border border-sidebar-border/70 dark:border-sidebar-border">
-                            <div
-                                className="relative flex h-10 w-full items-center justify-center px-4 text-sm text-gray-500"
-                                style={{
-                                    backgroundColor: wire_colors.find((c) => String(c.id) === data.wire_color_base_id)?.hex || 'transparent',
-                                }}
-                            >
-                                {!data.wire_color_base_id && <span>Цвет провода</span>}
-                            </div>
-                            {data.wire_color_add_id && (
-                                <div
-                                    className="absolute top-1/2 h-1 w-full -translate-y-1/2"
-                                    style={{
-                                        backgroundColor: wire_colors.find((c) => String(c.id) === data.wire_color_add_id)?.hex || 'transparent',
-                                    }}
-                                ></div>
-                            )}
-                        </div>
-                    </div>
-                </div>
+                <WirePreview
+                    description={data.description}
+                    baseColorId={data.wire_color_base_id}
+                    addColorId={data.wire_color_add_id}
+                    wireColors={wire_colors}
+                />
             </div>
         </AppLayout>
     );

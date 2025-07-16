@@ -92,7 +92,7 @@ export default function TerminalIndex({ terminals, pagination }: { terminals: an
             <Head title="Терминалы" />
             <div className="p-4">
                 <Heading title="Терминалы" description="Управление терминалами" />
-                <div className="mb-4">
+                <div className="mb-4 flex">
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Button variant="ghost" size="icon" className="border border-sidebar-border/50">
@@ -105,7 +105,7 @@ export default function TerminalIndex({ terminals, pagination }: { terminals: an
                     </Tooltip>
                     <Tooltip>
                         <TooltipTrigger asChild>
-                            <Button variant="ghost" size="icon" className="ml-2 border border-sidebar-border/50">
+                            <Button asChild variant="ghost" size="icon" className="ml-2 border border-sidebar-border/50">
                                 <Link href={route('terminals.index', { all: true })}>
                                     <CloudDownload />
                                 </Link>
@@ -115,8 +115,10 @@ export default function TerminalIndex({ terminals, pagination }: { terminals: an
                     </Tooltip>
                     <Tooltip>
                         <TooltipTrigger asChild>
-                            <Button variant="ghost" size="icon" className="relative ml-2 overflow-hidden border border-sidebar-border/50">
-                                <Import />
+                            <div className="relative ml-2">
+                                <Button variant="ghost" size="icon" className="border border-sidebar-border/50">
+                                    <Import />
+                                </Button>
                                 <Input
                                     ref={fileInputRef}
                                     type="file"
@@ -126,7 +128,7 @@ export default function TerminalIndex({ terminals, pagination }: { terminals: an
                                     onChange={handleFileChange}
                                     disabled={processing}
                                 />
-                            </Button>
+                            </div>
                         </TooltipTrigger>
                         <TooltipContent>Импорт из файла</TooltipContent>
                     </Tooltip>
