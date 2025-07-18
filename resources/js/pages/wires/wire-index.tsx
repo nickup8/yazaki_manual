@@ -90,14 +90,14 @@ export default function WireIndex({
     const handleReset = () => {
         setIsResetting(true);
         resetFilters();
-        router.get(
-            '/wires',
-            {},
-            {
-                preserveState: true,
-                onFinish: () => setIsResetting(false),
-            },
-        );
+        // router.get(
+        //     '/wires',
+        //     {},
+        //     {
+        //         preserveState: true,
+        //         onFinish: () => setIsResetting(false),
+        //     },
+        // );
     };
 
     const { fileInputRef, handleFileChange, processing, progress } = useFileImport(() => {
@@ -113,7 +113,7 @@ export default function WireIndex({
                 <div className="mb-4">
                     <Tooltip>
                         <TooltipTrigger asChild>
-                            <Button variant="ghost" size="icon" className="border border-sidebar-border/50">
+                            <Button asChild variant="ghost" size="icon" className="border border-sidebar-border/50">
                                 <Link href="/wires/create">
                                     <Plus />
                                 </Link>
@@ -124,7 +124,7 @@ export default function WireIndex({
 
                     <Tooltip>
                         <TooltipTrigger asChild>
-                            <Button variant="ghost" size="icon" className="ml-2 border border-sidebar-border/50">
+                            <Button asChild variant="ghost" size="icon" className="ml-2 border border-sidebar-border/50">
                                 <Link href={route('wires.index', { all: true })}>
                                     <CloudDownload />
                                 </Link>
@@ -174,11 +174,15 @@ export default function WireIndex({
 
                 {wires && (
                     <>
-                        <div className="mt-8 mb-4 text-lg">
+                        <div className="mt-4 mb-2 text-lg">
                             Количество проводов <span>{wires.meta.total}</span>
                         </div>
                         <WireTable wires={wires.data} />
-                        <Pagination links={wires.meta.links} />
+                        {wires.meta.last_page > 1 && (
+                            <div className="mt-2 flex justify-center">
+                                <Pagination links={wires.meta.links} />
+                            </div>
+                        )}
                     </>
                 )}
             </div>

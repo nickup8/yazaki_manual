@@ -14,7 +14,7 @@ interface FormFieldProps {
 
 export default function FormField({ id, label, type = 'text', value, onChange, disabled = false, error }: FormFieldProps) {
     return (
-        <div className="w-[280px]">
+        <div className="w-full">
             <Label htmlFor={id}>{label}</Label>
             <Input id={id} type={type} value={value} onChange={(e) => onChange(e.target.value)} disabled={disabled} />
             <InputError message={error} />

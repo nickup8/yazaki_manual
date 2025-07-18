@@ -1,3 +1,4 @@
+import FormField from '@/components/form-field';
 import Heading from '@/components/heading';
 import Pagination from '@/components/pagination';
 import { Button } from '@/components/ui/button';
@@ -24,26 +25,27 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 export default function TerminalIndex({ terminals, pagination }: { terminals: any; pagination: any }) {
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const [terminal_key, setTerminalKey] = useState('');
+
     const [processing, setProcessing] = useState(false);
     const [progress, setProgress] = useState<UploadProgress>({
         percentage: 0,
         total: null,
     });
 
-    const { reset } = useForm();
+    const { reset, errors, data, setData } = useForm({
+        terminal_key: '',
+        terminal_spn: '',
+    });
 
     const submit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        router.get(
-            '/terminals',
-            { terminal_key },
-            {
-                preserveState: true,
-                preserveScroll: true,
-            },
-        );
+        const query: Record<string, string> = {};
+        if (data.terminal_spn) query.terminal_spn = data.terminal_spn;
+        if (data.terminal_key) query.terminal_key = data.terminal_key;
+        router.get('/terminals', query, { preserveState: true });
     };
+
+    const handleReset = () => reset();
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -95,7 +97,7 @@ export default function TerminalIndex({ terminals, pagination }: { terminals: an
                 <div className="mb-4 flex">
                     <Tooltip>
                         <TooltipTrigger asChild>
-                            <Button variant="ghost" size="icon" className="border border-sidebar-border/50">
+                            <Button asChild variant="ghost" size="icon" className="border border-sidebar-border/50">
                                 <Link href="/terminals/create">
                                     <Plus />
                                 </Link>
@@ -134,18 +136,46 @@ export default function TerminalIndex({ terminals, pagination }: { terminals: an
                     </Tooltip>
                 </div>
                 <div>
-                    <form className="flex w-full gap-2 border-t border-b py-2" onSubmit={submit}>
-                        <Input type="search" placeholder="Код терминала" onChange={(e) => setTerminalKey(e.target.value)} />
-                        <Button type="submit">Найти</Button>
+                    <form className="flex w-full items-end gap-4 border-b pb-4" onSubmit={submit}>
+                        {/* <Input type="search" placeholder="Код терминала" onChange={(e) => setTerminalKey(e.target.value)} /> */}
+
+                        <FormField
+                            id="terminal_key"
+                            label="Код терминала"
+                            value={data.terminal_key}
+                            onChange={(val) => setData('terminal_key', val)}
+                            disabled={processing}
+                            error={errors.terminal_key}
+                        />
+                        <FormField
+                            id="terminal_spn"
+                            label="Код поставщика (SPN)"
+                            value={data.terminal_spn}
+                            onChange={(val) => setData('terminal_spn', val)}
+                            disabled={processing}
+                            error={errors.terminal_spn}
+                        />
+                        <div className="flex gap-2">
+                            <Button type="submit" disabled={processing}>
+                                {processing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Найти
+                            </Button>
+                            <Button type="button" variant="outline" onClick={handleReset}>
+                                Очистить
+                            </Button>
+                        </div>
                     </form>
                 </div>
                 {terminals.data.length > 0 && (
                     <>
-                        <div className="mt-8 mb-4 text-lg">
+                        <div className="mt-4 mb-2 text-lg">
                             Количество проводов <span>{terminals.meta.total}</span>
                         </div>
                         <TerminalTable terminals={terminals.data} />
-                        <Pagination links={terminals.meta.links} />
+                        {terminals.meta.last_page > 1 && (
+                            <div className="mt-2 flex justify-center">
+                                <Pagination links={terminals.meta.links} />
+                            </div>
+                        )}
                     </>
                 )}
             </div>

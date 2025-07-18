@@ -49,7 +49,7 @@ class WireController extends Controller
                 $query->where('description', 'like', '%'.$request->input('description').'%');
             }
 
-            $perPage = $request->input('per_page', 15);
+            $perPage = $request->input('per_page', 10);
             $paginated = $query->paginate($perPage)->withQueryString();
             $wires = WireResource::collection($paginated);
             $pagination = [

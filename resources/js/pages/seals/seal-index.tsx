@@ -75,7 +75,7 @@ export default function SealIndex() {
                 <div className="mb-4">
                     <Tooltip>
                         <TooltipTrigger asChild>
-                            <Button variant="ghost" size="icon" className="border border-sidebar-border/50">
+                            <Button asChild variant="ghost" size="icon" className="border border-sidebar-border/50">
                                 <Link href="/seals/create">
                                     <Plus />
                                 </Link>
@@ -85,7 +85,7 @@ export default function SealIndex() {
                     </Tooltip>
                     <Tooltip>
                         <TooltipTrigger asChild>
-                            <Button variant="ghost" size="icon" className="ml-2 border border-sidebar-border/50">
+                            <Button asChild variant="ghost" size="icon" className="ml-2 border border-sidebar-border/50">
                                 <Link href={route('terminals.index', { all: true })}>
                                     <CloudDownload />
                                 </Link>
@@ -110,6 +110,9 @@ export default function SealIndex() {
                         </TooltipTrigger>
                         <TooltipContent>Импорт из файла</TooltipContent>
                     </Tooltip>
+                </div>
+                <div>
+                    <form></form>
                 </div>
             </div>
         </AppLayout>

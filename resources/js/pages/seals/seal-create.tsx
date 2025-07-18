@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
+import SealPreview from './seal-preview';
 
 export default function SealCreate({ seal_colors }: { seal_colors: any }) {
     const breadcrumbs: BreadcrumbItem[] = [
@@ -35,6 +36,8 @@ export default function SealCreate({ seal_colors }: { seal_colors: any }) {
             preserveScroll: true,
         });
     };
+
+    const selectedColor = seal_colors.data.find((color: any) => String(color.id) === String(data.seal_color_id));
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -99,6 +102,15 @@ export default function SealCreate({ seal_colors }: { seal_colors: any }) {
                         </Button>
                     </div>
                 </form>
+                <div className="mt-8">
+                    <SealPreview
+                        color={selectedColor?.color_hex ?? '#000'}
+                        seal_key={data.seal_key ? data.seal_key : 'Введите код уплотнителя'}
+                        seal_spn={data.seal_spn}
+                        seal_supplier={data.seal_supplier}
+                        description={data.description}
+                    />
+                </div>
             </div>
         </AppLayout>
     );
