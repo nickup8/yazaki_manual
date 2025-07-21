@@ -13,7 +13,7 @@ class TerminalController extends Controller
 {
     public function index(Request $request)
     {
-        $hasFilters = $request->filled('terminal_key')|| $request->filled('terminal_spn');
+        $hasFilters = $request->filled('terminal_key') || $request->filled('terminal_spn');
         $shouldLoadData = $hasFilters || $request->boolean('all');
 
         $terminals = [];
@@ -28,7 +28,6 @@ class TerminalController extends Controller
             if ($request->filled('terminal_spn')) {
                 $query->where('terminal_spn', 'like', '%'.$request->input('terminal_spn').'%');
             }
-
 
             $terminals = $query->paginate(10)->appends($request->all());
         }
