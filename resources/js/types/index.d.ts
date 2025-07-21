@@ -66,3 +66,20 @@ export interface Wire {
     created_at: string;
     updated_at: string;
 }
+
+export interface Seal {
+    id: number;
+    seal_key: string;
+    seal_spn: string;
+    seal_color: SealColor;
+    description: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface SealColor {
+    id: number;
+    color_name: string;
+    color_hex: string;
+    color_short: string;
+}

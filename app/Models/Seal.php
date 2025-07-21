@@ -13,4 +13,9 @@ class Seal extends Model
         'description',
         'seal_color_id',
     ];
+
+    public function seal_color()
+    {
+        return $this->belongsTo(SealColor::class);
+    }
 }

@@ -26,13 +26,13 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function TerminalIndex({ terminals, pagination }: { terminals: any; pagination: any }) {
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const [processing, setProcessing] = useState(false);
+    const [fileProcessing, setfileProcessing] = useState(false);
     const [progress, setProgress] = useState<UploadProgress>({
         percentage: 0,
         total: null,
     });
 
-    const { reset, errors, data, setData } = useForm({
+    const { reset, errors, data, setData, processing, isDirty, get } = useForm({
         terminal_key: '',
         terminal_spn: '',
     });
@@ -54,7 +54,7 @@ export default function TerminalIndex({ terminals, pagination }: { terminals: an
         const formData = new FormData();
         formData.append('file', file);
 
-        setProcessing(true);
+        setfileProcessing(true);
         setProgress({ percentage: 0, total: null });
 
         router.post(route('terminals.import'), formData, {
@@ -80,7 +80,7 @@ export default function TerminalIndex({ terminals, pagination }: { terminals: an
             },
 
             onFinish: () => {
-                setProcessing(false);
+                setfileProcessing(false);
                 setProgress({ percentage: 0, total: null });
                 if (fileInputRef.current) {
                     fileInputRef.current.value = '';
@@ -128,7 +128,7 @@ export default function TerminalIndex({ terminals, pagination }: { terminals: an
                                     accept=".xlsx,.csv,.txt"
                                     className="absolute top-0 left-0 h-full w-full cursor-pointer opacity-0"
                                     onChange={handleFileChange}
-                                    disabled={processing}
+                                    disabled={fileProcessing}
                                 />
                             </div>
                         </TooltipTrigger>
@@ -136,7 +136,7 @@ export default function TerminalIndex({ terminals, pagination }: { terminals: an
                     </Tooltip>
                 </div>
                 <div>
-                    <form className="flex w-full items-end gap-4 border-b pb-4" onSubmit={submit}>
+                    <form className="flex w-full items-end gap-2 border-b pb-4" onSubmit={submit}>
                         {/* <Input type="search" placeholder="Код терминала" onChange={(e) => setTerminalKey(e.target.value)} /> */}
 
                         <FormField
@@ -159,7 +159,7 @@ export default function TerminalIndex({ terminals, pagination }: { terminals: an
                             <Button type="submit" disabled={processing}>
                                 {processing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Найти
                             </Button>
-                            <Button type="button" variant="outline" onClick={handleReset}>
+                            <Button type="button" variant="outline" onClick={handleReset} disabled={processing}>
                                 Очистить
                             </Button>
                         </div>
@@ -168,7 +168,7 @@ export default function TerminalIndex({ terminals, pagination }: { terminals: an
                 {terminals.data.length > 0 && (
                     <>
                         <div className="mt-4 mb-2 text-lg">
-                            Количество проводов <span>{terminals.meta.total}</span>
+                            Количество терминалов: <span>{terminals.meta.total}</span>
                         </div>
                         <TerminalTable terminals={terminals.data} />
                         {terminals.meta.last_page > 1 && (
@@ -180,7 +180,7 @@ export default function TerminalIndex({ terminals, pagination }: { terminals: an
                 )}
             </div>
 
-            {processing && (
+            {fileProcessing && (
                 <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black/70 text-white">
                     <Loader2 className="mb-4 h-12 w-12 animate-spin" />
                     <div className="mb-2 text-lg">Импорт файла...</div>
