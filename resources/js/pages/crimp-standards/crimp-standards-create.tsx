@@ -8,10 +8,10 @@ import { WireType } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { Loader2 } from 'lucide-react';
 
-export default function CrimpStandartsCreate({ wire_types }: { wire_types: WireType[] }) {
+export default function CrimpStandardsCreate({ wire_types }: { wire_types: WireType[] }) {
     const breadcrumbs = [
-        { title: 'Кримп стандарты', href: '/crimp_standarts' },
-        { title: 'Создание кримп стандарта', href: '/crimp_standarts/create' },
+        { title: 'Кримп стандарты', href: '/crimp_standards' },
+        { title: 'Создание кримп стандарта', href: '/crimp_standards/create' },
     ];
 
     const { data, setData, errors, processing, reset, post } = useForm({
@@ -42,7 +42,7 @@ export default function CrimpStandartsCreate({ wire_types }: { wire_types: WireT
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        post(route('crimp-standarts.store'), {
+        post(route('crimp_standards.store'), {
             onSuccess: () => reset(),
             preserveScroll: true,
         });

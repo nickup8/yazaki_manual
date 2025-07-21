@@ -31,7 +31,7 @@ export function AppSidebar() {
             },
             {
                 title: 'Кримп стандарты',
-                href: '/crimp_standarts',
+                href: '/crimp_standards',
                 icon: RulerDimensionLine,
             },
             {

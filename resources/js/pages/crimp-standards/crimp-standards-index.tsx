@@ -14,11 +14,11 @@ type UploadProgress = {
     total: number | null;
 };
 
-export default function CrimpStandartsIndex() {
+export default function CrimpStandardsIndex() {
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Кримп стандарты',
-            href: '/crimp_standarts',
+            href: '/crimp_standards',
         },
     ];
 
@@ -83,7 +83,7 @@ export default function CrimpStandartsIndex() {
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Button asChild variant="ghost" size="icon" className="border border-sidebar-border/50">
-                                <Link href="/crimp_standarts/create">
+                                <Link href="/crimp_standards/create">
                                     <Plus />
                                 </Link>
                             </Button>
@@ -93,7 +93,7 @@ export default function CrimpStandartsIndex() {
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Button asChild variant="ghost" size="icon" className="ml-2 border border-sidebar-border/50">
-                                <Link href={route('terminals.index', { all: true })}>
+                                <Link href={route('crimp_standards.index', { all: true })}>
                                     <CloudDownload />
                                 </Link>
                             </Button>

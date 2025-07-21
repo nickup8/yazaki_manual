@@ -12,14 +12,14 @@ class CrimpStandardController extends Controller
 {
     public function index()
     {
-        return inertia('crimp-standarts/crimp-standarts-index');
+        return inertia('crimp-standards/crimp-standards-index');
     }
 
     public function create()
     {
         $wire_types = WireType::all();
 
-        return inertia('crimp-standarts/crimp-standarts-create',
+        return inertia('crimp-standards/crimp-standards-create',
             [
                 'wire_types' => $wire_types,
                 'success' => session('success'),

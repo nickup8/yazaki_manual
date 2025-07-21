@@ -36,11 +36,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('seals/store', [SealController::class, 'store'])->name('seals.store');
 
-    Route::get('crimp_standarts', [CrimpStandardController::class, 'index'])->name('crimp-standarts.index');
+    Route::get('crimp_standards', [CrimpStandardController::class, 'index'])->name('crimp_standards.index');
 
-    Route::get('crimp_standarts/create', [CrimpStandardController::class, 'create'])->name('crimp-standarts.create');
+    Route::get('crimp_standards/create', [CrimpStandardController::class, 'create'])->name('crimp_standards.create');
 
-    Route::post('crimp_standarts/store', [CrimpStandardController::class, 'store'])->name('crimp-standarts.store');
+    Route::post('crimp_standards/store', [CrimpStandardController::class, 'store'])->name('crimp_standards.store');
 });
 
 require __DIR__.'/settings.php';
