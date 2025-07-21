@@ -42,7 +42,10 @@ export default function TerminalIndex({ terminals, pagination }: { terminals: an
         const query: Record<string, string> = {};
         if (data.terminal_spn) query.terminal_spn = data.terminal_spn;
         if (data.terminal_key) query.terminal_key = data.terminal_key;
-        router.get('/terminals', query, { preserveState: true });
+        get('/terminals', {
+            data: query,
+            preserveState: true,
+        });
     };
 
     const handleReset = () => reset();

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CrimpStandartController;
 use App\Http\Controllers\SealController;
 use App\Http\Controllers\TerminalController;
 use App\Http\Controllers\WireController;
@@ -34,6 +35,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('seals/create', [SealController::class, 'create'])->name('seals.create');
 
     Route::post('seals/store', [SealController::class, 'store'])->name('seals.store');
+
+    Route::get('crimp_standarts', [CrimpStandartController::class, 'index'])->name('crimp-standarts.index');
+
+    Route::get('crimp_standarts/create', [CrimpStandartController::class, 'create'])->name('crimp-standarts.create');
 });
 
 require __DIR__.'/settings.php';
