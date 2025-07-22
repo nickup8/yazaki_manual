@@ -53,6 +53,8 @@ export interface WireColor {
 export interface WireType {
     id: number;
     name: string;
+    created_at: string;
+    updated_at: string;
 }
 
 export interface Wire {
@@ -82,4 +84,53 @@ export interface SealColor {
     color_name: string;
     color_hex: string;
     color_short: string;
+}
+
+export interface Terminal {
+    id: number;
+    terminal_key: string;
+    terminal_spn: string;
+    terminal_supplier: string;
+    description: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface Seal {
+    id: number;
+    seal_key: string;
+    seal_spn: string;
+    seal_color: SealColor;
+    seal_supplier: string;
+    description: string;
+    created_at: string;
+    updated_at: string;
+}
+export interface CrimpStandart {
+    terminal: Terminal;
+    seal: Seal;
+    type_code_wire_1: string;
+    size_code_wire_1: string;
+    type_code_wire_2: string;
+    size_code_wire_2: string;
+    wire_type_1: WireType;
+    cross_section_wire_1: number;
+    wire_type_2: WireType | null;
+    cross_section_wire_2: number | null;
+    strip_length: number;
+    str_tolerance: number;
+    conductor_crimp_height: number;
+    conductor_crimp_height_tolerance: number;
+    isolation_crimp_height: number;
+    isolation_crimp_height_tolerance: number;
+    conductor_crimp_width_min: number;
+    conductor_crimp_width_max: number;
+    isolation_crimp_width_min: number;
+    isolation_crimp_width_max: number;
+    separation_force_wire_1: number;
+    separation_force_wire_2: number | null;
+    customer_code: string;
+    placement: string | null;
+    created_at: string;
+    updated_at: string;
 }

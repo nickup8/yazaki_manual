@@ -17,18 +17,18 @@ class WireResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'wire_key' => $this->wire_key,
-            'description' => $this->description,
-            'wire_type' => $this->wire_type,
-            'wire_color_base' => $this->wire_color_base,
-            'wire_color_add' => $this->wire_color_add,
-            'cross_section' => $this->cross_section,
-            'wire_color_add2' => $this->wire_color_add2,
-            'wire_color_add3' => $this->wire_color_add3,
-            'wire_color_add4' => $this->wire_color_add4,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'id' => $this->resource->id,
+            'wire_key' => $this->resource->wire_key,
+            'description' => $this->resource->description,
+            'wire_type' => $this->resource->wire_type,
+            'wire_color_base' => $this->resource->wire_color_base,
+            'wire_color_add' => $this->resource->wire_color_add,
+            'cross_section' => $this->resource->cross_section,
+            'wire_color_add2' => $this->resource->wire_color_add2,
+            'wire_color_add3' => $this->resource->wire_color_add3,
+            'wire_color_add4' => $this->resource->wire_color_add4,
+            'created_at' => $this->resource->created_at,
+            'updated_at' => $this->resource->updated_at,
         ];
     }
 }

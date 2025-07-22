@@ -61,6 +61,6 @@ class SealController extends Controller
         ]);
 
         // dd($seal);
-        return back()->with('success', 'Уплотнитель '.$seal->seal_key.' успешно создан');
+        return back()->with('success', 'Уплотнитель '.$seal->seal_key . ' успешно создан');
     }
 }

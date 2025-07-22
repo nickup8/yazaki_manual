@@ -1,10 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Link } from '@inertiajs/react';
 import { EllipsisVertical } from 'lucide-react';
 
 export default function CrimpStandardsTable({ crimp_standards }: any) {
-    const columns = [
+    const columns: any[] = [
         {
             accessorKey: 'crimp_standard',
             header: 'Терминал',
@@ -49,21 +50,29 @@ export default function CrimpStandardsTable({ crimp_standards }: any) {
         },
         {
             id: 'actions',
-            cell: () => (
+            cell: ({ row }: any) => (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="flex size-8 text-muted-foreground data-[state=open]:bg-muted" size="icon">
+                        <Button variant="ghost" className="flex size-8 cursor-pointer text-muted-foreground data-[state=open]:bg-muted" size="icon">
                             <EllipsisVertical />
                             <span className="sr-only">Open menu</span>
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-32">
-                        <DropdownMenuItem>Просмотр</DropdownMenuItem>
+                        <DropdownMenuItem>
+                            <Link
+                                href={route('crimp_standards.show', {
+                                    crimp_standard: row.original.id,
+                                })}
+                                className="w-full"
+                            >
+                                Просмотр
+                            </Link>
+                        </DropdownMenuItem>
                         <DropdownMenuItem>Редактировать</DropdownMenuItem>
                         <DropdownMenuItem>Копировать</DropdownMenuItem>
-
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem variant="destructive">Удалить</DropdownMenuItem>
+                        <DropdownMenuItem className="text-red-600">Удалить</DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             ),

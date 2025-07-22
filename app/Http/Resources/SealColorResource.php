@@ -15,10 +15,10 @@ class SealColorResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'color_name' => $this->color_name,
-            'color_hex' => $this->color_hex,
-            'color_short' => $this->color_short,
+            'id' => $this->resource->id,
+            'color_name' => $this->resource->color_name,
+            'color_hex' => $this->resource->color_hex,
+            'color_short' => $this->resource->color_short,
         ];
     }
 }

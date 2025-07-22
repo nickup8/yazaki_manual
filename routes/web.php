@@ -41,6 +41,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('crimp_standards/create', [CrimpStandardController::class, 'create'])->name('crimp_standards.create');
 
     Route::post('crimp_standards/store', [CrimpStandardController::class, 'store'])->name('crimp_standards.store');
+
+    Route::get('crimp_standards/{crimp_standard}', [CrimpStandardController::class, 'show'])->name('crimp_standards.show');
 });
 
 require __DIR__.'/settings.php';
