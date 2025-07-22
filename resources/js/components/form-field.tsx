@@ -11,15 +11,24 @@ interface FormFieldProps {
     disabled?: boolean;
     error?: string;
     required?: boolean;
+    pattern?: string;
 }
 
-export default function FormField({ id, label, type = 'text', value, onChange, disabled = false, error, required }: FormFieldProps) {
+export default function FormField({ id, label, type = 'text', value, onChange, disabled = false, error, required, pattern }: FormFieldProps) {
     return (
         <div className="w-full">
             <Label htmlFor={id} className={disabled ? 'text-gray-400' : ' '}>
                 {label} {required && <span className="text-red-500">*</span>}
             </Label>
-            <Input required={required} id={id} type={type} value={value} onChange={(e) => onChange(e.target.value)} disabled={disabled} />
+            <Input
+                required={required}
+                id={id}
+                type={type}
+                value={value}
+                onChange={(e) => onChange(e.target.value)}
+                disabled={disabled}
+                pattern={pattern}
+            />
             <InputError message={error} />
         </div>
     );

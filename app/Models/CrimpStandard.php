@@ -30,6 +30,7 @@ class CrimpStandard extends Model
         'separation_force_wire_1',
         'separation_force_wire_2',
         'customer_code',
+        'placement'
     ];
 
     public function terminal()
@@ -44,6 +45,11 @@ class CrimpStandard extends Model
 
     public function wireType()
     {
-        return $this->belongsTo(WireType::class);
+        return $this->belongsTo(WireType::class, 'wire_type_id_1', 'id');
+    }
+
+    public function wireType2()
+    {
+        return $this->belongsTo(WireType::class, 'wire_type_id_2', 'id');
     }
 }

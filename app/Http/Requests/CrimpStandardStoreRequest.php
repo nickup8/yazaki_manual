@@ -37,6 +37,7 @@ class CrimpStandardStoreRequest extends FormRequest
             'separation_force_wire_1' => ['required', 'integer', 'between:0,2000'],
             'separation_force_wire_2' => ['nullable', 'integer', 'between:0,2000'],
             'customer_code' => ['required', 'string', 'max:255'],
+            'placement' => ['nullable', 'string', 'max:255', 'in:Внакладку,Рядом'],
         ];
     }
 

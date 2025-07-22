@@ -38,6 +38,7 @@ export default function CrimpStandardsCreate({ wire_types }: { wire_types: WireT
         separation_force_wire_1: '',
         separation_force_wire_2: '',
         customer_code: '',
+        placement: '',
     });
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -57,6 +58,8 @@ export default function CrimpStandardsCreate({ wire_types }: { wire_types: WireT
             {wireType.name}
         </SelectItem>
     ));
+
+    const normalizeDecimal = (value: string) => value.replace(',', '.');
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -122,7 +125,7 @@ export default function CrimpStandardsCreate({ wire_types }: { wire_types: WireT
                             label="Сечение провода 1"
                             type="text"
                             value={data.cross_section_wire_1}
-                            onChange={(val) => setData('cross_section_wire_1', val.trim())}
+                            onChange={(val) => setData('cross_section_wire_1', normalizeDecimal(val.trim()))}
                             error={errors.cross_section_wire_1}
                             disabled={processing}
                             required
@@ -167,7 +170,7 @@ export default function CrimpStandardsCreate({ wire_types }: { wire_types: WireT
                             label="Сечение провода 2"
                             type="text"
                             value={data.cross_section_wire_2}
-                            onChange={(val) => setData('cross_section_wire_2', val.trim())}
+                            onChange={(val) => setData('cross_section_wire_2', normalizeDecimal(val.trim()))}
                             error={errors.cross_section_wire_2}
                             disabled={processing || data.type_code_wire_2 === '' || data.size_code_wire_2 === ''}
                         />
@@ -178,7 +181,7 @@ export default function CrimpStandardsCreate({ wire_types }: { wire_types: WireT
                             label="C-C/H"
                             type="text"
                             value={data.conductor_crimp_height}
-                            onChange={(val) => setData('conductor_crimp_height', val.trim())}
+                            onChange={(val) => setData('conductor_crimp_height', normalizeDecimal(val.trim()))}
                             error={errors.conductor_crimp_height}
                             disabled={processing}
                             required
@@ -188,7 +191,7 @@ export default function CrimpStandardsCreate({ wire_types }: { wire_types: WireT
                             label="C-C/H допуск"
                             type="text"
                             value={data.conductor_crimp_height_tolerance}
-                            onChange={(val) => setData('conductor_crimp_height_tolerance', val.trim())}
+                            onChange={(val) => setData('conductor_crimp_height_tolerance', normalizeDecimal(val.trim()))}
                             error={errors.conductor_crimp_height_tolerance}
                             disabled={processing}
                             required
@@ -198,7 +201,7 @@ export default function CrimpStandardsCreate({ wire_types }: { wire_types: WireT
                             label="I-C/H"
                             type="text"
                             value={data.isolation_crimp_height}
-                            onChange={(val) => setData('isolation_crimp_height', val.trim())}
+                            onChange={(val) => setData('isolation_crimp_height', normalizeDecimal(val.trim()))}
                             error={errors.isolation_crimp_height}
                             disabled={processing}
                             required
@@ -208,7 +211,7 @@ export default function CrimpStandardsCreate({ wire_types }: { wire_types: WireT
                             label="I-C/H допуск"
                             type="text"
                             value={data.isolation_crimp_height_tolerance}
-                            onChange={(val) => setData('isolation_crimp_height_tolerance', val.trim())}
+                            onChange={(val) => setData('isolation_crimp_height_tolerance', normalizeDecimal(val.trim()))}
                             error={errors.isolation_crimp_height_tolerance}
                             disabled={processing}
                             required
@@ -218,7 +221,7 @@ export default function CrimpStandardsCreate({ wire_types }: { wire_types: WireT
                             label="C-C/W min"
                             type="text"
                             value={data.conductor_crimp_width_min}
-                            onChange={(val) => setData('conductor_crimp_width_min', val.trim())}
+                            onChange={(val) => setData('conductor_crimp_width_min', normalizeDecimal(val.trim()))}
                             error={errors.conductor_crimp_width_min}
                             disabled={processing}
                             required
@@ -228,7 +231,7 @@ export default function CrimpStandardsCreate({ wire_types }: { wire_types: WireT
                             label="C-C/W max"
                             type="text"
                             value={data.conductor_crimp_width_max}
-                            onChange={(val) => setData('conductor_crimp_width_max', val.trim())}
+                            onChange={(val) => setData('conductor_crimp_width_max', normalizeDecimal(val.trim()))}
                             error={errors.conductor_crimp_width_max}
                             disabled={processing}
                             required
@@ -238,7 +241,7 @@ export default function CrimpStandardsCreate({ wire_types }: { wire_types: WireT
                             label="I-C/W min"
                             type="text"
                             value={data.isolation_crimp_width_min}
-                            onChange={(val) => setData('isolation_crimp_width_min', val.trim())}
+                            onChange={(val) => setData('isolation_crimp_width_min', normalizeDecimal(val.trim()))}
                             error={errors.isolation_crimp_width_min}
                             disabled={processing}
                             required
@@ -248,7 +251,7 @@ export default function CrimpStandardsCreate({ wire_types }: { wire_types: WireT
                             label="I-C/W max"
                             type="text"
                             value={data.isolation_crimp_width_max}
-                            onChange={(val) => setData('isolation_crimp_width_max', val.trim())}
+                            onChange={(val) => setData('isolation_crimp_width_max', normalizeDecimal(val.trim()))}
                             error={errors.isolation_crimp_width_max}
                             disabled={processing}
                             required
@@ -260,7 +263,7 @@ export default function CrimpStandardsCreate({ wire_types }: { wire_types: WireT
                             label="Длина зачистки"
                             type="text"
                             value={data.strip_length}
-                            onChange={(val) => setData('strip_length', val.trim())}
+                            onChange={(val) => setData('strip_length', normalizeDecimal(val.trim()))}
                             error={errors.strip_length}
                             disabled={processing}
                             required
@@ -270,11 +273,29 @@ export default function CrimpStandardsCreate({ wire_types }: { wire_types: WireT
                             label="Длина зачистки допуск"
                             type="text"
                             value={data.str_tolerance}
-                            onChange={(val) => setData('str_tolerance', val.trim())}
+                            onChange={(val) => setData('str_tolerance', normalizeDecimal(val.trim()))}
                             error={errors.str_tolerance}
                             disabled={processing}
                             required
                         />
+                        <div className="w-full">
+                            <Label className={processing || data.type_code_wire_2 === '' || data.size_code_wire_2 === '' ? 'text-gray-400' : ''}>
+                                Расположение проводов
+                            </Label>
+                            <Select
+                                value={data.placement}
+                                onValueChange={(val) => setData('placement', val)}
+                                disabled={processing || data.type_code_wire_2 === '' || data.size_code_wire_2 === ''}
+                            >
+                                <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="Выберите расположение" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="Внакладку">Внакладку</SelectItem>
+                                    <SelectItem value="Рядом">Рядом</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
                         <FormField
                             id="separation_force_wire_1"
                             label="Усилие отрыва провода 1"
@@ -303,6 +324,7 @@ export default function CrimpStandardsCreate({ wire_types }: { wire_types: WireT
                             error={errors.customer_code}
                             disabled={processing}
                             required
+                            pattern="^[a-zA-Z0-9]+$"
                         />
                     </div>
                     <div className="mt-2 flex gap-2">

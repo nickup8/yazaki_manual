@@ -3,17 +3,52 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CrimpStandardStoreRequest;
+use App\Http\Resources\CrimpStandardResource;
 use App\Models\CrimpStandard;
 use App\Models\Seal;
 use App\Models\Terminal;
 use App\Models\WireType;
+use Illuminate\Http\Request;
 
 class CrimpStandardController extends Controller
 {
-    public function index()
-    {
-        return inertia('crimp-standards/crimp-standards-index');
+    public function index(Request $request)
+{
+    $query = CrimpStandard::query();
+
+    // Фильтр по терминалу
+    if ($request->filled('terminal')) {
+        $terminal = Terminal::where('terminal_key', $request->input('terminal'))->first();
+        if (!$terminal) {
+            // Терминал не найден — вернуть пустую коллекцию
+            return inertia('crimp-standards/crimp-standards-index', [
+                'crimp_standards' => CrimpStandardResource::collection(collect()),
+            ]);
+        }
+        $query->where('terminal_id', $terminal->id);
     }
+
+    // Фильтр по уплотнителю
+    if ($request->filled('seal')) {
+        $seal = Seal::where('seal_key', $request->input('seal'))->first();
+        if (!$seal) {
+            // Уплотнитель не найден — вернуть пустую коллекцию
+            return inertia('crimp-standards/crimp-standards-index', [
+                'crimp_standards' => CrimpStandardResource::collection(collect()),
+            ]);
+        }
+        $query->where('seal_id', $seal->id);
+    }
+
+    // Загружаем только если есть фильтры или передан параметр all
+    $crimpStandards = ($request->filled('terminal') || $request->filled('seal') || $request->filled('all'))
+        ? $query->paginate(10)->withQueryString()
+        : collect(); // пустая коллекция, если ничего не запрошено
+
+    return inertia('crimp-standards/crimp-standards-index', [
+        'crimp_standards' => CrimpStandardResource::collection($crimpStandards),
+    ]);
+}
 
     public function create()
     {

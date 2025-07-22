@@ -36,6 +36,7 @@ return new class extends Migration
             $table->integer('separation_force_wire_1');
             $table->integer('separation_force_wire_2')->nullable();
             $table->string('customer_code');
+            $table->string('placement')->nullable();
             $table->timestamps();
 
             $table->unique(['terminal_id', 'seal_id', 'type_code_wire_1', 'size_code_wire_1', 'type_code_wire_2', 'size_code_wire_2', 'wire_type_id_1', 'wire_type_id_2', 'customer_code'], 'unique_crimp_standards');
