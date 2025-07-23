@@ -170,30 +170,37 @@ export default function CrimpStandardsShow({
                         </div>
                     </CardContent>
                 </Card>
-                <div className="mt-2 flex justify-end gap-4">
+                <div className="mt-2 flex justify-between gap-4">
                     <div className="text-sm">
-                        <span className="text-gray-500">Дата создания: </span>
-                        <span>
-                            {new Date(crimp_standards.data.created_at).toLocaleString('ru-RU', {
-                                day: 'numeric',
-                                month: 'long',
-                                year: 'numeric',
-                                hour: 'numeric',
-                                minute: 'numeric',
-                            })}
-                        </span>
+                        <span className="text-gray-500">Клиент: </span>
+                        <span className="font-bold">{crimp_standards.data.customer_code}</span>
                     </div>
-                    <div className="text-sm">
-                        <span className="text-gray-500">Дата обновления: </span>
-                        <span>
-                            {new Date(crimp_standards.data.updated_at).toLocaleString('ru-RU', {
-                                day: 'numeric',
-                                month: 'long',
-                                year: 'numeric',
-                                hour: 'numeric',
-                                minute: 'numeric',
-                            })}
-                        </span>
+
+                    <div className="flex gap-4">
+                        <div className="text-sm">
+                            <span className="text-gray-500">Дата создания: </span>
+                            <span>
+                                {new Date(crimp_standards.data.created_at).toLocaleString('ru-RU', {
+                                    day: 'numeric',
+                                    month: 'long',
+                                    year: 'numeric',
+                                    hour: 'numeric',
+                                    minute: 'numeric',
+                                })}
+                            </span>
+                        </div>
+                        <div className="text-sm">
+                            <span className="text-gray-500">Дата обновления: </span>
+                            <span>
+                                {new Date(crimp_standards.data.updated_at).toLocaleString('ru-RU', {
+                                    day: 'numeric',
+                                    month: 'long',
+                                    year: 'numeric',
+                                    hour: 'numeric',
+                                    minute: 'numeric',
+                                })}
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
