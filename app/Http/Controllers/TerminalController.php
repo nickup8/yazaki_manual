@@ -69,7 +69,7 @@ class TerminalController extends Controller
             'description' => $data['description'],
         ]);
 
-        return back()->with('success', 'Терминал ' . $terminal->terminal_key . ' успешно создан');
+        return back()->with('success', 'Терминал '.$terminal->terminal_key.' успешно создан');
     }
 
     public function import(Request $request)

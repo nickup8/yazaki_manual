@@ -1,10 +1,19 @@
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Link } from '@inertiajs/react';
+import { CrimpStandart } from '@/types';
+import { Link, router } from '@inertiajs/react';
 import { EllipsisVertical } from 'lucide-react';
 
-export default function CrimpStandardsTable({ crimp_standards }: any) {
+export default function CrimpStandardsTable({
+    crimp_standards,
+    terminal,
+    seal,
+}: {
+    crimp_standards: CrimpStandart[];
+    terminal: string;
+    seal: string;
+}) {
     const columns: any[] = [
         {
             accessorKey: 'crimp_standard',
@@ -34,6 +43,10 @@ export default function CrimpStandardsTable({ crimp_standards }: any) {
             accessorKey: 'cross_section_wire_2',
             header: 'Сечение провода 2',
             cell: ({ row }: any) => row.original.cross_section_wire_2 || '-',
+        },
+        {
+            accessorKey: 'customer_code',
+            header: 'Клиент',
         },
 
         {
@@ -69,10 +82,17 @@ export default function CrimpStandardsTable({ crimp_standards }: any) {
                                 Просмотр
                             </Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem>Редактировать</DropdownMenuItem>
-                        <DropdownMenuItem>Копировать</DropdownMenuItem>
+                        <DropdownMenuItem>
+                            <Link href={route('crimp_standards.edit', { crimp_standard: row.original.id })}>Редактировать</Link>
+                        </DropdownMenuItem>
+
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-red-600">Удалить</DropdownMenuItem>
+                        <DropdownMenuItem
+                            className="text-red-600"
+                            onClick={() => router.delete(route('crimp_standards.destroy', { crimp_standard: row.original.id }), {})}
+                        >
+                            Удалить
+                        </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             ),

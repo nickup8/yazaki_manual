@@ -30,7 +30,7 @@ class CrimpStandard extends Model
         'separation_force_wire_1',
         'separation_force_wire_2',
         'customer_code',
-        'placement'
+        'placement',
     ];
 
     public function terminal()

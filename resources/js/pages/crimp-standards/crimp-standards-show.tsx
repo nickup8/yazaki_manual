@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem, CrimpStandart } from '@/types';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { Clipboard, FileSliders } from 'lucide-react';
 
 export default function CrimpStandardsShow({
@@ -38,7 +38,9 @@ export default function CrimpStandardsShow({
                         }
                     />
                     <div>
-                        <Button variant="outline">Редактировать</Button>
+                        <Button variant="outline">
+                            <Link href={route('crimp_standards.edit', { crimp_standard: crimp_standards.data.id })}>Редактировать</Link>
+                        </Button>
                     </div>
                 </div>
 

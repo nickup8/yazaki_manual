@@ -43,6 +43,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('crimp_standards/store', [CrimpStandardController::class, 'store'])->name('crimp_standards.store');
 
     Route::get('crimp_standards/{crimp_standard}', [CrimpStandardController::class, 'show'])->name('crimp_standards.show');
+
+    Route::get('crimp_standards/{crimp_standard}/edit', [CrimpStandardController::class, 'edit'])->name('crimp_standards.edit');
+
+    Route::put('crimp_standards/{crimp_standard}', [CrimpStandardController::class, 'update'])->name('crimp_standards.update');
+
+    Route::delete('crimp_standards/{crimp_standard}', [CrimpStandardController::class, 'destroy'])->name('crimp_standards.destroy');
 });
 
 require __DIR__.'/settings.php';

@@ -4,46 +4,56 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
-import { WireType } from '@/types';
+import { CrimpStandart, WireType } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { Loader2 } from 'lucide-react';
 
-export default function CrimpStandardsCreate({ wire_types }: { wire_types: WireType[] }) {
+export default function CrimpStandardsUpdate({
+    wire_types,
+    crimp_standards,
+}: {
+    wire_types: WireType[];
+    crimp_standards: {
+        data: CrimpStandart;
+    };
+}) {
     const breadcrumbs = [
         { title: 'Кримп стандарты', href: '/crimp_standards' },
-        { title: 'Создание кримп стандарта', href: '/crimp_standards/create' },
+        { title: 'Редактирование кримп стандарта', href: '/crimp_standards/create' },
     ];
+    console.log(crimp_standards);
+    const crimp = crimp_standards.data;
 
-    const { data, setData, errors, processing, reset, post } = useForm({
-        terminal: '',
-        seal: '',
-        type_code_wire_1: '',
-        size_code_wire_1: '',
-        type_code_wire_2: '',
-        size_code_wire_2: '',
-        wire_type_id_1: '',
-        cross_section_wire_1: '',
-        wire_type_id_2: '',
-        cross_section_wire_2: '',
-        strip_length: '',
-        str_tolerance: '',
-        conductor_crimp_height: '',
-        conductor_crimp_height_tolerance: '',
-        isolation_crimp_height: '',
-        isolation_crimp_height_tolerance: '',
-        conductor_crimp_width_min: '',
-        conductor_crimp_width_max: '',
-        isolation_crimp_width_min: '',
-        isolation_crimp_width_max: '',
-        separation_force_wire_1: '',
-        separation_force_wire_2: '',
-        customer_code: '',
-        placement: '',
+    const { data, setData, errors, processing, reset, put } = useForm({
+        terminal: crimp.terminal.terminal_key,
+        seal: crimp.seal?.seal_key ? crimp.seal?.seal_key : '',
+        type_code_wire_1: crimp.type_code_wire_1,
+        size_code_wire_1: crimp.size_code_wire_1,
+        type_code_wire_2: crimp.type_code_wire_2 ? crimp.type_code_wire_2 : '',
+        size_code_wire_2: crimp.size_code_wire_2 ? crimp.size_code_wire_2 : '',
+        wire_type_id_1: crimp.wire_type_1.id.toString(),
+        cross_section_wire_1: crimp.cross_section_wire_1.toString(),
+        wire_type_id_2: crimp.wire_type_2 ? crimp.wire_type_2.id.toString() : '',
+        cross_section_wire_2: crimp.cross_section_wire_2?.toString() || '',
+        strip_length: crimp.strip_length.toString(),
+        str_tolerance: crimp.str_tolerance.toString(),
+        conductor_crimp_height: crimp.conductor_crimp_height.toString(),
+        conductor_crimp_height_tolerance: crimp.conductor_crimp_height_tolerance.toString(),
+        isolation_crimp_height: crimp.isolation_crimp_height.toString(),
+        isolation_crimp_height_tolerance: crimp.isolation_crimp_height_tolerance.toString(),
+        conductor_crimp_width_min: crimp.conductor_crimp_width_min.toString(),
+        conductor_crimp_width_max: crimp.conductor_crimp_width_max.toString(),
+        isolation_crimp_width_min: crimp.isolation_crimp_width_min.toString(),
+        isolation_crimp_width_max: crimp.isolation_crimp_width_max.toString(),
+        separation_force_wire_1: crimp.separation_force_wire_1.toString(),
+        separation_force_wire_2: crimp.separation_force_wire_2?.toString() || '',
+        customer_code: crimp.customer_code,
+        placement: crimp.placement?.toString() || '',
     });
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        post(route('crimp_standards.store'), {
+        put(route('crimp_standards.update', { crimp_standard: crimp.id }), {
             onSuccess: () => reset(),
             preserveScroll: true,
         });
@@ -65,7 +75,7 @@ export default function CrimpStandardsCreate({ wire_types }: { wire_types: WireT
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Создание кримп стандарта" />
             <div className="p-4">
-                <Heading title="Создание кримп стандарта" />
+                <Heading title="Редактирование кримп стандарта" />
                 <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
                     <div className="flex gap-2">
                         <FormField
@@ -75,7 +85,7 @@ export default function CrimpStandardsCreate({ wire_types }: { wire_types: WireT
                             value={data.terminal}
                             onChange={(val) => setData('terminal', val.trim())}
                             error={errors.terminal}
-                            disabled={processing}
+                            disabled
                             required
                         />
                         <FormField
@@ -85,7 +95,7 @@ export default function CrimpStandardsCreate({ wire_types }: { wire_types: WireT
                             value={data.seal}
                             onChange={(val) => setData('seal', val.trim())}
                             error={errors.seal}
-                            disabled={processing}
+                            disabled
                         />
                     </div>
                     <div className="flex gap-2">
@@ -96,7 +106,7 @@ export default function CrimpStandardsCreate({ wire_types }: { wire_types: WireT
                             value={data.type_code_wire_1}
                             onChange={(val) => setData('type_code_wire_1', val.trim().toUpperCase())}
                             error={errors.type_code_wire_1}
-                            disabled={processing}
+                            disabled
                             required
                         />
                         <FormField
@@ -106,14 +116,14 @@ export default function CrimpStandardsCreate({ wire_types }: { wire_types: WireT
                             value={data.size_code_wire_1}
                             onChange={(val) => setData('size_code_wire_1', val.trim())}
                             error={errors.size_code_wire_1}
-                            disabled={processing}
+                            disabled
                             required
                         />
                         <div className="w-full">
-                            <Label>
+                            <Label className={'text-gray-400'}>
                                 Тип провода 1 <span className="text-red-500">*</span>
                             </Label>
-                            <Select value={data.wire_type_id_1} onValueChange={(val) => setData('wire_type_id_1', val)}>
+                            <Select value={data.wire_type_id_1} onValueChange={(val) => setData('wire_type_id_1', val)} disabled>
                                 <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Выберите тип провода" />
                                 </SelectTrigger>
@@ -127,7 +137,7 @@ export default function CrimpStandardsCreate({ wire_types }: { wire_types: WireT
                             value={data.cross_section_wire_1}
                             onChange={(val) => setData('cross_section_wire_1', normalizeDecimal(val.trim()))}
                             error={errors.cross_section_wire_1}
-                            disabled={processing}
+                            disabled
                             required
                         />
                     </div>
@@ -139,7 +149,7 @@ export default function CrimpStandardsCreate({ wire_types }: { wire_types: WireT
                             value={data.type_code_wire_2}
                             onChange={(val) => setData('type_code_wire_2', val.trim().toUpperCase())}
                             error={errors.type_code_wire_2}
-                            disabled={processing}
+                            disabled
                         />
                         <FormField
                             id="size_code_wire_2"
@@ -148,17 +158,11 @@ export default function CrimpStandardsCreate({ wire_types }: { wire_types: WireT
                             value={data.size_code_wire_2}
                             onChange={(val) => setData('size_code_wire_2', val.trim())}
                             error={errors.size_code_wire_2}
-                            disabled={processing}
+                            disabled
                         />
                         <div className="w-full">
-                            <Label className={processing || data.type_code_wire_2 === '' || data.size_code_wire_2 === '' ? 'text-gray-400' : ''}>
-                                Тип провода 2
-                            </Label>
-                            <Select
-                                value={data.wire_type_id_2}
-                                onValueChange={(val) => setData('wire_type_id_2', val)}
-                                disabled={processing || data.type_code_wire_2 === '' || data.size_code_wire_2 === ''}
-                            >
+                            <Label className="text-gray-400">Тип провода 2</Label>
+                            <Select value={data.wire_type_id_2} onValueChange={(val) => setData('wire_type_id_2', val)} disabled>
                                 <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Выберите тип провода" />
                                 </SelectTrigger>
@@ -172,7 +176,7 @@ export default function CrimpStandardsCreate({ wire_types }: { wire_types: WireT
                             value={data.cross_section_wire_2}
                             onChange={(val) => setData('cross_section_wire_2', normalizeDecimal(val.trim()))}
                             error={errors.cross_section_wire_2}
-                            disabled={processing || data.type_code_wire_2 === '' || data.size_code_wire_2 === ''}
+                            disabled
                         />
                     </div>
                     <div className="flex gap-2">
@@ -322,7 +326,7 @@ export default function CrimpStandardsCreate({ wire_types }: { wire_types: WireT
                             value={data.customer_code}
                             onChange={(val) => setData('customer_code', val.trim())}
                             error={errors.customer_code}
-                            disabled={processing}
+                            disabled
                             required
                             pattern="^[a-zA-Z0-9]+$"
                         />

@@ -107,8 +107,9 @@ export interface Seal {
     updated_at: string;
 }
 export interface CrimpStandart {
+    id: number;
     terminal: Terminal;
-    seal: Seal;
+    seal: Seal | null;
     type_code_wire_1: string;
     size_code_wire_1: string;
     type_code_wire_2: string;

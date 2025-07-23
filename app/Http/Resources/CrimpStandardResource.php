@@ -24,7 +24,7 @@ class CrimpStandardResource extends JsonResource
             'size_code_wire_1' => $this->resource->size_code_wire_1,
             'type_code_wire_2' => $this->resource->type_code_wire_2,
             'size_code_wire_2' => $this->resource->size_code_wire_2,
-            
+
             'cross_section_wire_1' => $this->resource->cross_section_wire_1,
             'cross_section_wire_2' => $this->resource->cross_section_wire_2,
             'strip_length' => $this->resource->strip_length,
@@ -42,7 +42,7 @@ class CrimpStandardResource extends JsonResource
             'customer_code' => $this->resource->customer_code,
             'created_at' => $this->resource->created_at,
             'updated_at' => $this->resource->updated_at,
-            'placement' => $this->resource->placement
+            'placement' => $this->resource->placement,
         ];
     }
 }

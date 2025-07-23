@@ -107,4 +107,28 @@ class CrimpStandardController extends Controller
             'crimp_standards' => new CrimpStandardResource($crimpStandard),
         ]);
     }
+
+    public function edit(CrimpStandard $crimpStandard)
+    {
+        $wire_types = WireType::all();
+
+        return inertia('crimp-standards/crimp-standards-update', [
+            'crimp_standards' => new CrimpStandardResource($crimpStandard),
+            'wire_types' => $wire_types,
+        ]);
+    }
+
+    public function update(CrimpStandard $crimpStandard)
+    {
+        $crimpStandard->update(request()->all());
+
+        return redirect()->route('crimp_standards.show', $crimpStandard)->with('success', 'Кримп-стандарт успешно обновлен');
+    }
+
+    public function destroy(CrimpStandard $crimpStandard)
+    {
+        $crimpStandard->delete();
+
+        return redirect()->route('crimp_standards.index')->with('success', 'Кримп-стандарт успешно удален');
+    }
 }

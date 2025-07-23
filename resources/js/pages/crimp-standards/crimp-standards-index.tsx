@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
-import { Head, Link, router, useForm } from '@inertiajs/react';
+import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { AxiosProgressEvent } from 'axios';
 import { CloudDownload, Import, Loader2, Plus } from 'lucide-react';
 import { useRef, useState } from 'react';
@@ -17,7 +17,7 @@ type UploadProgress = {
     total: number | null;
 };
 
-export default function CrimpStandardsIndex({ crimp_standards }: any) {
+export default function CrimpStandardsIndex({ crimp_standards }: { crimp_standards: any }) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Кримп стандарты',
@@ -25,7 +25,7 @@ export default function CrimpStandardsIndex({ crimp_standards }: any) {
         },
     ];
 
-    console.log(crimp_standards);
+    console.log(usePage());
 
     const [fileProcessing, setfileProcessing] = useState(false);
     const [progress, setProgress] = useState<UploadProgress>({
@@ -175,7 +175,7 @@ export default function CrimpStandardsIndex({ crimp_standards }: any) {
                             Количество стандартов: <span>{crimp_standards.meta.total}</span>
                         </div>
                         <div>
-                            <CrimpStandardsTable crimp_standards={crimp_standards.data} />
+                            <CrimpStandardsTable crimp_standards={crimp_standards.data} terminal={data.terminal} seal={data.seal} />
                         </div>
                         {crimp_standards.meta.last_page > 1 && (
                             <div className="mt-2 flex justify-center">
