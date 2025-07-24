@@ -49,6 +49,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('crimp_standards/{crimp_standard}', [CrimpStandardController::class, 'update'])->name('crimp_standards.update');
 
     Route::delete('crimp_standards/{crimp_standard}', [CrimpStandardController::class, 'destroy'])->name('crimp_standards.destroy');
+
+    Route::post('/crimp_standards/import', [CrimpStandardController::class, 'import'])->name('crimp_standards.import');
 });
 
 require __DIR__.'/settings.php';

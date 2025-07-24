@@ -22,6 +22,7 @@ const footerNavItems: NavItem[] = [
 
 export function AppSidebar() {
     const { url } = usePage();
+
     const mainNavItems: NavItem[] = useMemo(
         () => [
             {

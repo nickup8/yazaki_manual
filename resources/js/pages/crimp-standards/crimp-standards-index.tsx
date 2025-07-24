@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
-import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
+import { Head, Link, router, useForm } from '@inertiajs/react';
 import { AxiosProgressEvent } from 'axios';
 import { CloudDownload, Import, Loader2, Plus } from 'lucide-react';
 import { useRef, useState } from 'react';
@@ -25,7 +25,7 @@ export default function CrimpStandardsIndex({ crimp_standards }: { crimp_standar
         },
     ];
 
-    console.log(usePage());
+    console.log(crimp_standards);
 
     const [fileProcessing, setfileProcessing] = useState(false);
     const [progress, setProgress] = useState<UploadProgress>({
@@ -50,35 +50,42 @@ export default function CrimpStandardsIndex({ crimp_standards }: { crimp_standar
         setfileProcessing(true);
         setProgress({ percentage: 0, total: null });
 
-        router.post(route('terminals.import'), formData, {
+        router.post(route('crimp_standards.import'), formData, {
             forceFormData: true,
             preserveScroll: true,
+            preserveState: true,
+            only: ['crimpStandards'], // если используешь partial reload
 
             onProgress: (event?: AxiosProgressEvent) => {
-                if (!event || event.total === undefined) return;
-                const percent = Math.round((event.loaded * 100) / (event.total ?? 1));
-                setProgress({
-                    percentage: percent,
-                    total: event.total,
-                });
+                if (event?.total) {
+                    const percent = Math.round((event.loaded * 100) / event.total);
+                    setProgress({
+                        percentage: percent,
+                        total: event.total,
+                    });
+                }
             },
 
             onSuccess: () => {
-                router.visit('/terminals', { only: ['terminals'], preserveState: true });
+                // если нужно остаться на странице и просто обновить данные
+                router.reload({ only: ['crimpStandards'] });
+                // toast.success('Импорт успешно завершен!');
             },
 
             onError: (errors) => {
-                console.error('Import errors:', errors);
+                console.error('Ошибка при импорте:', errors);
                 alert('Ошибка при импорте файла: ' + Object.values(errors)[0]);
             },
 
             onFinish: () => {
                 setfileProcessing(false);
                 setProgress({ percentage: 0, total: null });
+
                 if (fileInputRef.current) {
                     fileInputRef.current.value = '';
                 }
-                reset();
+
+                reset(); // сбрасываем форму или состояние, если нужно
             },
         });
     };
@@ -185,6 +192,19 @@ export default function CrimpStandardsIndex({ crimp_standards }: { crimp_standar
                     </>
                 )}
             </div>
+            {fileProcessing && (
+                <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black/70 text-white">
+                    <Loader2 className="mb-4 h-12 w-12 animate-spin" />
+                    <div className="mb-2 text-lg">Импорт файла...</div>
+                    {progress.total !== null ? (
+                        <div className="text-xl font-bold">
+                            {progress.percentage}% ({Math.round(progress.total / 1024)} КБ)
+                        </div>
+                    ) : (
+                        <div className="text-xl font-bold">Загрузка...</div>
+                    )}
+                </div>
+            )}
         </AppLayout>
     );
 }

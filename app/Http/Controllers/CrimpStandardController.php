@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CrimpStandardStoreRequest;
 use App\Http\Resources\CrimpStandardResource;
+use App\Imports\CrimpStandardImport;
 use App\Models\CrimpStandard;
 use App\Models\Seal;
 use App\Models\Terminal;
 use App\Models\WireType;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CrimpStandardController extends Controller
 {
@@ -131,4 +133,15 @@ class CrimpStandardController extends Controller
 
         return redirect()->route('crimp_standards.index')->with('success', 'Кримп-стандарт успешно удален');
     }
+
+    public function import(Request $request)
+{
+    $request->validate([
+        'file' => ['required', 'file', 'mimes:csv,txt'],
+    ]);
+
+    Excel::import(new CrimpStandardImport, $request->file('file'));
+
+    return back()->with('success', 'Импорт завершён');
+}
 }
