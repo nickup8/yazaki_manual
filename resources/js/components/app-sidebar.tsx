@@ -41,6 +41,11 @@ export function AppSidebar() {
                 icon: Book,
                 items: [
                     {
+                        title: 'Аппликаторы',
+                        href: '/applications',
+                        isActive: url.startsWith('/applications'),
+                    },
+                    {
                         title: 'Провода',
                         href: '/wires',
                         isActive: url.startsWith('/wires'),

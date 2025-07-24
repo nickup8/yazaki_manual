@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\CrimpStandardController;
 use App\Http\Controllers\SealController;
 use App\Http\Controllers\TerminalController;
@@ -51,6 +52,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('crimp_standards/{crimp_standard}', [CrimpStandardController::class, 'destroy'])->name('crimp_standards.destroy');
 
     Route::post('/crimp_standards/import', [CrimpStandardController::class, 'import'])->name('crimp_standards.import');
+
+    Route::get('applications', [ApplicationController::class, 'index'])->name('applications.index');
+    Route::get('applications/create', [ApplicationController::class, 'create'])->name('applications.create');
+
+    Route::post('applications/store', [ApplicationController::class, 'store'])->name('applications.store');
+
 });
 
 require __DIR__.'/settings.php';

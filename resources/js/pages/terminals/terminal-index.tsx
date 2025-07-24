@@ -37,13 +37,17 @@ export default function TerminalIndex({ terminals, pagination }: { terminals: an
         terminal_spn: '',
     });
 
-    const submit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const query: Record<string, string> = {};
-        if (data.terminal_spn) query.terminal_spn = data.terminal_spn;
-        if (data.terminal_key) query.terminal_key = data.terminal_key;
-        get('/terminals', {
-            data: query,
+
+        const params = new URLSearchParams();
+
+        if (data.terminal_key.trim()) params.append('terminal_key', data.terminal_key.trim());
+        if (data.terminal_spn.trim()) params.append('application', data.terminal_spn.trim());
+
+        const url = params.toString() ? `/terminals?${params.toString()}` : '/terminals';
+
+        get(url, {
             preserveState: true,
         });
     };
@@ -139,7 +143,7 @@ export default function TerminalIndex({ terminals, pagination }: { terminals: an
                     </Tooltip>
                 </div>
                 <div>
-                    <form className="flex w-full items-end gap-2 border-b pb-4" onSubmit={submit}>
+                    <form className="flex w-full items-end gap-2 border-b pb-4" onSubmit={handleSubmit}>
                         {/* <Input type="search" placeholder="Код терминала" onChange={(e) => setTerminalKey(e.target.value)} /> */}
 
                         <FormField
