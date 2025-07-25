@@ -6,23 +6,24 @@ enum RolesEnum: string
 {
     case OPERATOR = 'operator';
     case ENGINEER = 'engineer';
-    case USER_MANAGER = 'user manager';
+    case USER_MANAGER = 'user_manager';
+
+    private const LABELS = [
+        'operator' => 'Оператор',
+        'engineer' => 'Инженер',
+        'user_manager' => 'Менеджер пользователей',
+    ];
 
     public static function labels(): array
     {
-        return [
-            self::OPERATOR->value => 'Оператор',
-            self::ENGINEER->value => 'Инженер',
-            self::USER_MANAGER->value => 'Менеджер пользователей',
-        ];
+        return array_reduce(self::cases(), function ($carry, $role) {
+            $carry[$role->value] = self::LABELS[$role->value];
+            return $carry;
+        }, []);
     }
 
     public function label(): string
     {
-        return match ($this) {
-            self::OPERATOR => 'Оператор',
-            self::ENGINEER => 'Инженер',
-            self::USER_MANAGER => 'Менеджер пользователей',
-        };
+        return self::LABELS[$this->value];
     }
 }

@@ -18,6 +18,8 @@ class TerminalController extends Controller
     {
         $filters = $request->only(['terminal_key', 'terminal_spn', 'all']);
 
+        $terminals = null;
+
         $terminals = $this->terminalService->getFilteredPaginatedList($filters);
 
         return inertia('terminals/terminal-index', [

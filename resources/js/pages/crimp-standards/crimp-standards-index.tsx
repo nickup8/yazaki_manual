@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
-import { Head, Link, router, useForm } from '@inertiajs/react';
+import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { AxiosProgressEvent } from 'axios';
 import { CloudDownload, Import, Loader2, Plus } from 'lucide-react';
 import { useRef, useState } from 'react';
@@ -25,7 +25,7 @@ export default function CrimpStandardsIndex({ crimp_standards }: { crimp_standar
         },
     ];
 
-    console.log(crimp_standards);
+    console.log(usePage().props);
 
     const [fileProcessing, setfileProcessing] = useState(false);
     const [progress, setProgress] = useState<UploadProgress>({

@@ -5,29 +5,36 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ApplicationStoreRequest;
 use App\Http\Resources\ApplicationResource;
 use App\Services\Application\ApplicationService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Inertia\Response;
 
 class ApplicationController extends Controller
 {
-    public function index(Request $request, ApplicationService $service)
+    private ApplicationService $service;
+    public function __construct(ApplicationService $service)
     {
-        $applications = $service->getFiltered($request);
+        $this->service = $service;
+    }
+    public function index(Request $request): Response
+    {
+        $applications = $this->service->getFiltered($request);
 
         return inertia('applications/application-index', [
             'applications' => ApplicationResource::collection($applications),
         ]);
     }
 
-    public function create()
+    public function create(): Response
     {
         return inertia('applications/application-create', [
             'success' => session('success'),
         ]);
     }
 
-    public function store(ApplicationStoreRequest $request, ApplicationService $service)
+    public function store(ApplicationStoreRequest $request,): RedirectResponse
     {
-        $result = $service->createFromRequest($request);
+        $result = $this->service->createFromRequest($request);
 
         return back()->with($result['status'], $result['message']);
     }
