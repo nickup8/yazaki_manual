@@ -67,8 +67,9 @@ class DatabaseSeeder extends Seeder
         }
 
         User::create([
-            'name' => 'Николай Сироткин',
-            'email' => 'nickup8@yandex.ru',
+            'name' => 'Николай',
+            'last_name' => 'Сироткин',
+            'login' => '4500',
             'password' => bcrypt('password'),
 
         ])->assignRole([RolesEnum::ENGINEER->value, RolesEnum::USER_MANAGER->value]);
