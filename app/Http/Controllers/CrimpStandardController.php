@@ -27,7 +27,7 @@ class CrimpStandardController extends Controller
                 'crimp_standards' => CrimpStandardResource::collection(collect()),
             ]);
         }
-        $query->where('terminal_id', $terminal->id);
+        $query->where('terminal_id', $terminal->id); 
     }
 
     // Фильтр по уплотнителю
@@ -99,7 +99,7 @@ class CrimpStandardController extends Controller
         'seal_id' => $seal?->id,
     ]);
 
-    return back()->with('success', 'Кримп-стандарт успешно создан');
+    return back()->with('success', 'Кримп-стандарт ' . $terminal->terminal_key . ' успешно создан');
 }
 
 

@@ -1,17 +1,20 @@
 import FormField from '@/components/form-field';
 import Heading from '@/components/heading';
+import Pagination from '@/components/pagination';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import AppLayout from '@/layouts/app-layout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { CloudDownload, Loader2, Plus } from 'lucide-react';
+import ApplicationTable from './application-table';
 
-export default function ApplicationIndex() {
+export default function ApplicationIndex({ applications }: any) {
     const breadcrumbs = [{ title: 'Аппликаторы', href: '/applications' }];
     const { data, setData, get, processing, errors } = useForm({
         terminal: '',
         application: '',
     });
+    console.log(applications);
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -46,7 +49,7 @@ export default function ApplicationIndex() {
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Button asChild variant="ghost" size="icon" className="ml-2 border border-sidebar-border/50">
-                                <Link href={route('crimp_standards.index', { all: true })}>
+                                <Link href={route('applications.index', { all: true })}>
                                     <CloudDownload />
                                 </Link>
                             </Button>
@@ -76,20 +79,20 @@ export default function ApplicationIndex() {
                 <div className="border-b pb-4">
                     <form className="flex gap-2" onSubmit={handleSubmit}>
                         <FormField
-                            id="terminal"
-                            label="Код терминала"
-                            value={data.terminal}
-                            onChange={(val) => setData('terminal', val.trim())}
-                            error={errors.terminal}
-                            type="text"
-                            disabled={processing}
-                        />
-                        <FormField
                             id="application"
                             label="Код аппликатора"
                             value={data.application}
                             onChange={(val) => setData('application', val.trim())}
                             error={errors.application}
+                            type="text"
+                            disabled={processing}
+                        />
+                        <FormField
+                            id="terminal"
+                            label="Код терминала"
+                            value={data.terminal}
+                            onChange={(val) => setData('terminal', val.trim())}
+                            error={errors.terminal}
                             type="text"
                             disabled={processing}
                         />
@@ -104,6 +107,16 @@ export default function ApplicationIndex() {
                         </div>
                     </form>
                 </div>
+                {applications.data.length > 0 && (
+                    <div className="mt-4">
+                        <ApplicationTable applications={applications.data} />
+                        {applications.meta.last_page > 1 && (
+                            <div className="mt-2 flex justify-center">
+                                <Pagination links={applications.meta.links} />
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
         </AppLayout>
     );

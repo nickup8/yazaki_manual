@@ -7,9 +7,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
+import { useEffect } from 'react';
+import { toast } from 'sonner';
 import SealPreview from './seal-preview';
 
-export default function SealCreate({ seal_colors }: { seal_colors: any }) {
+export default function SealCreate({ seal_colors, success }: { seal_colors: any; success: string }) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Уплотнители',
@@ -20,6 +22,12 @@ export default function SealCreate({ seal_colors }: { seal_colors: any }) {
             href: '/seals/create',
         },
     ];
+
+    useEffect(() => {
+        if (success) {
+            toast.success(success);
+        }
+    }, [success]);
 
     const { data, setData, errors, processing, post, reset } = useForm({
         seal_color_id: '',

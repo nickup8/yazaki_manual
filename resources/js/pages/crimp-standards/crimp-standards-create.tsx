@@ -7,12 +7,20 @@ import AppLayout from '@/layouts/app-layout';
 import { WireType } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { Loader2 } from 'lucide-react';
+import { useEffect } from 'react';
+import { toast } from 'sonner';
 
-export default function CrimpStandardsCreate({ wire_types }: { wire_types: WireType[] }) {
+export default function CrimpStandardsCreate({ wire_types, success }: { wire_types: WireType[]; success: string }) {
     const breadcrumbs = [
         { title: 'Кримп стандарты', href: '/crimp_standards' },
         { title: 'Создание кримп стандарта', href: '/crimp_standards/create' },
     ];
+
+    useEffect(() => {
+        if (success) {
+            toast.success(success);
+        }
+    }, [success]);
 
     const { data, setData, errors, processing, reset, post } = useForm({
         terminal: '',

@@ -43,6 +43,7 @@ class SealController extends Controller
 
         return inertia('seals/seal-create', [
             'seal_colors' => SealColorResource::collection($seal_colors),
+            'success' => session('success'),
         ]);
     }
 

@@ -3,15 +3,36 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ApplicationStoreRequest;
+use App\Http\Resources\ApplicationResource;
 use App\Models\Application;
 use App\Models\Terminal;
 use Illuminate\Http\Request;
 
 class ApplicationController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return inertia('applications/application-index');
+        $query = Application::query();
+        if($request->filled('terminal')) {
+            $terminal = Terminal::where('terminal_key', $request->input('terminal'))->first();
+            if (!$terminal) {
+                // Терминал не найден — вернуть пустую коллекцию
+                return inertia('applications/application-index', [
+                    'applications' => ApplicationResource::collection(collect(['12'])),
+                ]);
+            }
+            $query->where('terminal_id', $terminal->id);
+        }
+        
+        if($request->filled('application')) {
+            $query->where('inventory_key_application', $request->input('application'));
+        }
+        
+        $applications = ($request->filled('terminal') || $request->filled('application') || $request->filled('all')) ? $query->paginate(10)->withQueryString() : collect();
+
+        return inertia('applications/application-index', [
+            'applications' => ApplicationResource::collection($applications),
+        ]);
     }
 
     public function create()

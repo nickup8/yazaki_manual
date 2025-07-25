@@ -1,11 +1,13 @@
 import Heading from '@/components/heading';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem, WireColor, WireType } from '@/types';
-import { Head, useForm } from '@inertiajs/react';
+import { BreadcrumbItem, SharedData, WireColor, WireType } from '@/types';
+import { Head, useForm, usePage } from '@inertiajs/react';
 
 import FormField from '@/components/form-field';
 import SelectField from '@/components/select-field';
 import { Button } from '@/components/ui/button';
+import { useEffect } from 'react';
+import { toast } from 'sonner';
 import WirePreview from './wire-preview';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -22,6 +24,12 @@ export default function WireCreate({ wire_types, wire_colors, success }: { wire_
         wire_color_add_id: '',
         cross_section: '',
     });
+
+    useEffect(() => {
+        if (success) {
+            toast.success(success);
+        }
+    }, [success]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -40,8 +48,15 @@ export default function WireCreate({ wire_types, wire_colors, success }: { wire_
         // Отправляем форму
         post(route('wires.store'), {
             onSuccess: () => reset(),
+            onError: (errors) => {
+                if (errors.general) {
+                    toast.error(errors.general);
+                }
+            },
         });
     };
+
+    console.log(usePage<SharedData>().props);
 
     const handleReset = () => reset();
 

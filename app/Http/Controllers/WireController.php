@@ -87,9 +87,11 @@ class WireController extends Controller
             'wire_types' => $wire_types,
             'wire_colors' => $wire_colors,
             'success' => session('success'),
-
         ]);
     }
+
+
+    
 
     public function store(WireStoreRequest $request)
     {

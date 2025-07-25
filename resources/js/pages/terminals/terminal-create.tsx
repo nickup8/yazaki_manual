@@ -6,8 +6,10 @@ import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
+import { useEffect } from 'react';
+import { toast } from 'sonner';
 
-export default function TerminalCreate() {
+export default function TerminalCreate({ success }: { success?: string }) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Терминалы',
@@ -18,6 +20,12 @@ export default function TerminalCreate() {
             href: '/terminals/create',
         },
     ];
+
+    useEffect(() => {
+        if (success) {
+            toast.success(success);
+        }
+    }, [success]);
 
     const { post, processing, errors, setData, data, reset } = useForm({
         terminal_key: '',
