@@ -4,41 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TerminalStoreRequest;
 use App\Http\Resources\TerminalResource;
-use App\Imports\TerminalsImport;
-use App\Models\Terminal;
+
+use App\Services\Terminal\TerminalService;
 use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
 
 class TerminalController extends Controller
 {
+    public function __construct(
+        protected TerminalService $terminalService
+    ) {}
+
     public function index(Request $request)
     {
-        $hasFilters = $request->filled('terminal_key') || $request->filled('terminal_spn');
-        $shouldLoadData = $hasFilters || $request->boolean('all');
+        $filters = $request->only(['terminal_key', 'terminal_spn', 'all']);
 
-        $terminals = [];
-
-        if ($shouldLoadData) {
-            $query = Terminal::query();
-
-            if ($request->filled('terminal_key')) {
-                $query->where('terminal_key', $request->input('terminal_key'));
-            }
-
-            if ($request->filled('terminal_spn')) {
-                $query->where('terminal_spn', 'like', '%'.$request->input('terminal_spn').'%');
-            }
-
-            $terminals = $query->paginate(10)->appends($request->all());
-        }
+        $terminals = $this->terminalService->getFilteredPaginatedList($filters);
 
         return inertia('terminals/terminal-index', [
             'terminals' => TerminalResource::collection($terminals),
-            'filters' => [
-                'terminal_key' => $request->input('terminal_key'),
-                'terminal_spn' => $request->input('terminal_spn'),
-                'all' => $request->input('all'),
-            ],
+            'filters' => $filters,
         ]);
     }
 
@@ -47,29 +31,19 @@ class TerminalController extends Controller
         return inertia('terminals/terminal-create', [
             'success' => session('success'),
         ]);
-
     }
 
     public function store(TerminalStoreRequest $request)
     {
-        $data = $request->validated();
+        $result = $this->terminalService->create($request->validated());
 
-        $terminalRequest = Terminal::where('terminal_key', $data['terminal_key'])->first();
-
-        if ($terminalRequest) {
+        if (! $result['success']) {
             return redirect()->route('terminals.create')
                 ->withErrors(['terminal_key' => 'Такой код уже существует.'])
                 ->withInput();
         }
 
-        $terminal = Terminal::create([
-            'terminal_key' => $data['terminal_key'],
-            'terminal_spn' => $data['terminal_spn'],
-            'terminal_supplier' => $data['terminal_supplier'],
-            'description' => $data['description'],
-        ]);
-
-        return back()->with('success', 'Терминал '.$terminal->terminal_key.' успешно создан');
+        return back()->with('success', 'Терминал '.$result['terminal']->terminal_key.' успешно создан');
     }
 
     public function import(Request $request)
@@ -78,13 +52,8 @@ class TerminalController extends Controller
             'file' => 'required|file|mimes:csv,txt,xlsx',
         ]);
 
-        $import = new TerminalsImport;
-        Excel::import($import, $request->file('file'));
+        $result = $this->terminalService->importFromFile($request->file('file'));
 
-        return back()->with([
-            'successCount' => $import->successCount,
-            'skippedCount' => $import->skippedCount,
-            'importErrors' => $import->errors,
-        ]);
+        return back()->with($result);
     }
 }

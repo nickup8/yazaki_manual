@@ -3,55 +3,34 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\WireStoreRequest;
-use App\Http\Resources\WireResource;
-use App\Imports\WiresImport;
-use App\Models\Wire;
 use App\Models\WireColor;
 use App\Models\WireType;
 use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
 
 class WireController extends Controller
 {
+    public function __construct(protected \App\Services\Wire\WireService $service) {}
+
     public function index(Request $request)
     {
-        $hasFilters = $request->filled('wire_type_id') ||
-                      $request->filled('wire_color_base_id') ||
-                      $request->filled('wire_color_add_id') ||
-                      $request->filled('wire_key') ||
-                      $request->filled('description');
+        $filters = $request->only([
+            'wire_type_id',
+            'wire_color_base_id',
+            'wire_color_add_id',
+            'wire_key',
+            'description',
+            'all',
+            'per_page',
+        ]);
 
-        $shouldLoadData = $hasFilters || $request->filled('all');
-
-        $wires = null;
         $pagination = null;
+        $wires = null;
+
+        $hasFilters = collect($filters)->except(['all', 'per_page'])->filter(fn($v) => !empty($v))->isNotEmpty();
+        $shouldLoadData = $hasFilters || !empty($filters['all']);
 
         if ($shouldLoadData) {
-            $query = Wire::query();
-
-            if ($request->filled('wire_type_id')) {
-                $query->where('wire_type_id', $request->input('wire_type_id'));
-            }
-
-            if ($request->filled('wire_color_base_id')) {
-                $query->where('wire_color_id_1', $request->input('wire_color_base_id'));
-            }
-
-            if ($request->filled('wire_color_add_id')) {
-                $query->where('wire_color_id_2', $request->input('wire_color_add_id'));
-            }
-
-            if ($request->filled('wire_key')) {
-                $query->where('wire_key', 'like', '%'.$request->input('wire_key').'%');
-            }
-
-            if ($request->filled('description')) {
-                $query->where('description', 'like', '%'.$request->input('description').'%');
-            }
-
-            $perPage = $request->input('per_page', 10);
-            $paginated = $query->paginate($perPage)->withQueryString();
-            $wires = WireResource::collection($paginated);
+            [$paginated, $wires] = $this->service->getFilteredPaginatedList($filters);
             $pagination = [
                 'current_page' => $paginated->currentPage(),
                 'last_page' => $paginated->lastPage(),
@@ -66,60 +45,44 @@ class WireController extends Controller
             'wire_colors' => WireColor::all(),
             'wires' => $wires,
             'pagination' => $pagination,
-            'filters' => $request->only([
-                'wire_type_id',
-                'wire_color_base_id',
-                'wire_color_add_id',
-                'wire_key',
-                'description',
-                'all',
-            ]),
+            'filters' => $filters,
             'success' => session('success'),
         ]);
     }
 
     public function create()
     {
-        $wire_types = WireType::all();
-        $wire_colors = WireColor::all();
-
         return inertia('wires/wire-create', [
-            'wire_types' => $wire_types,
-            'wire_colors' => $wire_colors,
+            'wire_types' => WireType::all(),
+            'wire_colors' => WireColor::all(),
             'success' => session('success'),
         ]);
     }
-
-
-    
 
     public function store(WireStoreRequest $request)
     {
         $data = $request->validated();
 
-        try {
-            Wire::create([
-                'wire_key' => strtoupper($data['wire_key']),
-                'description' => $data['description'],
-                'wire_type_id' => $data['wire_type_id'],
-                'wire_color_id_1' => $data['wire_color_base_id'],
-                'wire_color_id_2' => $data['wire_color_add_id'],
-                'cross_section' => $data['cross_section'],
-            ]);
+        $result = $this->service->create($data);
 
-            return back()->with('success', 'Провод успешно создан');
-        } catch (\Exception $e) {
+        if (! $result['success']) {
             return back()->withErrors(['wire_key' => 'Такой код уже существует.'])->withInput();
         }
+
+        return back()->with('success', 'Провод успешно создан');
     }
 
     public function import(Request $request)
     {
         $request->validate([
-            'file' => 'required|file|mimetypes:text/csv,text/plain,application/vnd.ms-excel,application/octet-stream',
+            'file' => ['required', 'file', 'mimetypes:text/csv,text/plain,application/vnd.ms-excel,application/octet-stream'],
         ]);
 
-        Excel::import(new WiresImport, $request->file('file'));
+        $result = $this->service->importFromFile($request->file('file'));
+
+        if (!empty($result['error'])) {
+            return back()->withErrors(['file' => $result['error']]);
+        }
 
         return redirect()->route('wires.index')->with('success', 'Провода успешно импортированы');
     }
