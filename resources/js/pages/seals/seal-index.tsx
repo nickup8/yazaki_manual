@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem } from '@/types';
+import { BreadcrumbItem, PropsResponse, Seal } from '@/types';
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import { Tooltip } from '@radix-ui/react-tooltip';
 import { AxiosProgressEvent } from 'axios';
@@ -17,8 +17,7 @@ type UploadProgress = {
     percentage: number;
     total: number | null;
 };
-export default function SealIndex({ seals }: { seals: any }) {
-    console.log(seals);
+export default function SealIndex({ seals }: { seals: PropsResponse<Seal> }) {
     const breadcrumbs: BreadcrumbItem[] = [{ title: 'Уплотнители', href: '/seals' }];
 
     const fileInputRef = useRef<HTMLInputElement>(null);

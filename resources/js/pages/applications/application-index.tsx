@@ -4,18 +4,18 @@ import Pagination from '@/components/pagination';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import AppLayout from '@/layouts/app-layout';
+import { ApplicationItem, PropsResponse } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { CloudDownload, Loader2, Plus } from 'lucide-react';
 import ApplicationTable from './application-table';
 
-export default function ApplicationIndex({ applications }: any) {
+export default function ApplicationIndex({ applications }: { applications: PropsResponse<ApplicationItem> }) {
     const breadcrumbs = [{ title: 'Аппликаторы', href: '/applications' }];
     const { data, setData, get, processing, errors } = useForm({
         terminal: '',
         application: '',
     });
     console.log(applications);
-
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 

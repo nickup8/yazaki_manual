@@ -21,7 +21,7 @@ export default function CrimpStandardsUpdate({
         { title: 'Кримп стандарты', href: '/crimp_standards' },
         { title: 'Редактирование кримп стандарта', href: '/crimp_standards/create' },
     ];
-    console.log(crimp_standards);
+
     const crimp = crimp_standards.data;
 
     const { data, setData, errors, processing, reset, put } = useForm({

@@ -24,7 +24,6 @@ export default function CrimpStandardsShow({
         },
     ];
 
-    console.log(crimp_standards);
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={'Кримп стандарт ' + crimp_standards.data.terminal.terminal_key} />

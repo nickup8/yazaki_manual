@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem } from '@/types';
+import { BreadcrumbItem, PropsResponse, Terminal } from '@/types';
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import { AxiosProgressEvent } from 'axios';
 import { CloudDownload, Import, Loader2, Plus } from 'lucide-react';
@@ -23,7 +23,7 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/terminals',
     },
 ];
-export default function TerminalIndex({ terminals, pagination }: { terminals: any; pagination: any }) {
+export default function TerminalIndex({ terminals }: { terminals: PropsResponse<Terminal> }) {
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [fileProcessing, setfileProcessing] = useState(false);

@@ -1,6 +1,16 @@
 import FormField from '@/components/form-field';
 
-export default function CrimpSection({ data, errors, update, processing }: any) {
+export default function CrimpSection({
+    data,
+    errors,
+    update,
+    processing,
+}: {
+    data: any;
+    errors: Record<string, string>;
+    update: (key: string) => (val: string) => void;
+    processing: boolean;
+}) {
     return (
         <fieldset className="flex flex-wrap gap-4">
             <legend className="text-sm font-medium text-gray-600">Параметры кримпа</legend>

@@ -1,10 +1,12 @@
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Terminal } from '@/types';
+import { ColumnDef } from '@tanstack/react-table';
 import { EllipsisVertical } from 'lucide-react';
 
-export default function TerminalTable({ terminals }: any) {
-    const columns = [
+export default function TerminalTable({ terminals }: { terminals: Terminal[] }) {
+    const columns: ColumnDef<Terminal>[] = [
         {
             accessorKey: 'terminal_key',
             header: 'Код терминала',
@@ -14,31 +16,31 @@ export default function TerminalTable({ terminals }: any) {
             accessorKey: 'terminal_spn',
             header: 'SPN терминала',
             enableSorting: false,
-            cell: ({ row }: any) => (row.original.terminal_spn ? row.original.terminal_spn : '-'),
+            cell: ({ row }) => (row.original.terminal_spn ? row.original.terminal_spn : '-'),
         },
         {
             accessorKey: 'terminal_supplier',
             header: 'Поставщик терминала',
             enableSorting: false,
-            cell: ({ row }: any) => (row.original.terminal_supplier ? row.original.terminal_supplier : '-'),
+            cell: ({ row }) => (row.original.terminal_supplier ? row.original.terminal_supplier : '-'),
         },
         {
             accessorKey: 'description',
             header: 'Описание',
             enableSorting: false,
-            cell: ({ row }: any) => (row.original.description ? row.original.description : '-'),
+            cell: ({ row }) => (row.original.description ? row.original.description : '-'),
         },
         {
             accessorKey: 'created_at',
             header: 'Дата создания',
             enableSorting: false,
-            cell: ({ row }: any) => new Date(row.original.created_at).toLocaleString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' }),
+            cell: ({ row }) => new Date(row.original.created_at).toLocaleString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' }),
         },
         {
             accessorKey: 'updated_at',
             header: 'Дата обновления',
             enableSorting: false,
-            cell: ({ row }: any) => new Date(row.original.updated_at).toLocaleString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' }),
+            cell: ({ row }) => new Date(row.original.updated_at).toLocaleString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' }),
         },
         {
             id: 'actions',

@@ -5,13 +5,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem } from '@/types';
+import { BreadcrumbItem, PropsResponse, SealColor } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 import SealPreview from './seal-preview';
 
-export default function SealCreate({ seal_colors, success }: { seal_colors: any; success: string }) {
+export default function SealCreate({ seal_colors, success }: { seal_colors: PropsResponse<SealColor>; success: string }) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Уплотнители',
@@ -45,7 +45,7 @@ export default function SealCreate({ seal_colors, success }: { seal_colors: any;
         });
     };
 
-    const selectedColor = seal_colors.data.find((color: any) => String(color.id) === String(data.seal_color_id));
+    const selectedColor = seal_colors.data.find((color: SealColor) => String(color.id) === String(data.seal_color_id));
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -78,7 +78,7 @@ export default function SealCreate({ seal_colors, success }: { seal_colors: any;
                                     <SelectValue placeholder="Выберите цвет" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    {seal_colors.data.map((color: any) => (
+                                    {seal_colors.data.map((color: SealColor) => (
                                         <SelectItem key={color.id} value={String(color.id)}>
                                             <span className="flex items-center">
                                                 <span className="mr-2 inline-block h-4 w-4 border" style={{ backgroundColor: color.color_hex }} />

@@ -1,7 +1,7 @@
 import Heading from '@/components/heading';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem, SharedData, WireColor, WireType } from '@/types';
-import { Head, useForm, usePage } from '@inertiajs/react';
+import { BreadcrumbItem, WireColor, WireType } from '@/types';
+import { Head, useForm } from '@inertiajs/react';
 
 import FormField from '@/components/form-field';
 import SelectField from '@/components/select-field';
@@ -55,8 +55,6 @@ export default function WireCreate({ wire_types, wire_colors, success }: { wire_
             },
         });
     };
-
-    console.log(usePage<SharedData>().props);
 
     const handleReset = () => reset();
 

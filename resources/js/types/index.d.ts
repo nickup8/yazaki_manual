@@ -135,3 +135,40 @@ export interface CrimpStandart {
     created_at: string;
     updated_at: string;
 }
+
+export interface ApplicationItem {
+    id: number;
+    inventory_key_application: string;
+    location: string | null;
+    terminal: Terminal;
+}
+
+export interface PaginationLinks {
+    first: string;
+    last: string;
+    next: string | null;
+    prev: string | null;
+}
+
+export interface PaginationMetaLink {
+    url: string | null;
+    label: string;
+    active: boolean;
+}
+
+export interface PaginationMeta {
+    current_page: number;
+    from: number | null;
+    last_page: number;
+    links: PaginationMetaLink[];
+    path: string;
+    per_page: number;
+    to: number | null;
+    total: number;
+}
+
+export interface PropsResponse<T> {
+    data: T[];
+    links: PaginationLinks;
+    meta: PaginationMeta;
+}

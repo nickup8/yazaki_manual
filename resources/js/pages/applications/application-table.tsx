@@ -1,7 +1,9 @@
 import { DataTable } from '@/components/ui/data-table';
+import { ApplicationItem } from '@/types';
+import { ColumnDef } from '@tanstack/react-table';
 
-export default function ApplicationTable({ applications }: any) {
-    const columns = [
+export default function ApplicationTable({ applications }: { applications: ApplicationItem[] }) {
+    const columns: ColumnDef<ApplicationItem>[] = [
         {
             accessorKey: 'inventory_key_application',
             header: 'Инвентарный номер',
@@ -9,12 +11,12 @@ export default function ApplicationTable({ applications }: any) {
         {
             accessorKey: 'terminal',
             header: 'Код терминала',
-            cell: ({ row }: any) => row.original.terminal.terminal_key,
+            cell: ({ row }) => row.original.terminal.terminal_key,
         },
         {
             accessorKey: 'location',
             header: 'Местоположение',
-            cell: ({ row }: any) => row.original.location || '-',
+            cell: ({ row }) => row.original.location || '-',
         },
     ];
 

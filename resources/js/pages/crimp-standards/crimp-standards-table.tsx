@@ -3,6 +3,7 @@ import { DataTable } from '@/components/ui/data-table';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { CrimpStandart } from '@/types';
 import { Link, router } from '@inertiajs/react';
+import { ColumnDef } from '@tanstack/react-table';
 import { EllipsisVertical } from 'lucide-react';
 
 export default function CrimpStandardsTable({
@@ -14,26 +15,26 @@ export default function CrimpStandardsTable({
     terminal: string;
     seal: string;
 }) {
-    const columns: any[] = [
+    const columns: ColumnDef<CrimpStandart>[] = [
         {
             accessorKey: 'crimp_standard',
             header: 'Терминал',
-            cell: ({ row }: any) => row.original.terminal.terminal_key,
+            cell: ({ row }) => row.original.terminal.terminal_key,
         },
         {
             accessorKey: 'description',
             header: 'Уплотнитель',
-            cell: ({ row }: any) => row.original.seal?.seal_key || '-',
+            cell: ({ row }) => row.original.seal?.seal_key || '-',
         },
         {
             accessorKey: 'wire_type_1',
             header: 'Тип провода 1',
-            cell: ({ row }: any) => row.original.wire_type_1?.name,
+            cell: ({ row }) => row.original.wire_type_1?.name,
         },
         {
             accessorKey: 'wire_type_2',
             header: 'Тип провода 2',
-            cell: ({ row }: any) => row.original.wire_type_2?.name || '-',
+            cell: ({ row }) => row.original.wire_type_2?.name || '-',
         },
         {
             accessorKey: 'cross_section_wire_1',
@@ -42,7 +43,7 @@ export default function CrimpStandardsTable({
         {
             accessorKey: 'cross_section_wire_2',
             header: 'Сечение провода 2',
-            cell: ({ row }: any) => row.original.cross_section_wire_2 || '-',
+            cell: ({ row }) => row.original.cross_section_wire_2 || '-',
         },
         {
             accessorKey: 'customer_code',
@@ -53,17 +54,17 @@ export default function CrimpStandardsTable({
             accessorKey: 'created_at',
             header: 'Дата создания',
             enableSorting: false,
-            cell: ({ row }: any) => new Date(row.original.created_at).toLocaleString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' }),
+            cell: ({ row }) => new Date(row.original.created_at).toLocaleString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' }),
         },
         {
             accessorKey: 'updated_at',
             header: 'Дата обновления',
             enableSorting: false,
-            cell: ({ row }: any) => new Date(row.original.updated_at).toLocaleString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' }),
+            cell: ({ row }) => new Date(row.original.updated_at).toLocaleString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' }),
         },
         {
             id: 'actions',
-            cell: ({ row }: any) => (
+            cell: ({ row }) => (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="flex size-8 cursor-pointer text-muted-foreground data-[state=open]:bg-muted" size="icon">
