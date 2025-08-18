@@ -160,7 +160,7 @@ export default function CrimpStandardsIndex({ crimp_standards }: { crimp_standar
                             id="seal"
                             value={data.seal}
                             onChange={(val) => setData('seal', val.trim())}
-                            label="Код сечения"
+                            label="Код уплотнителя"
                             error={errors.seal}
                         />
                         <div className="flex items-end gap-2">
