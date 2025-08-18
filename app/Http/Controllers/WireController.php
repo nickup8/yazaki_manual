@@ -26,8 +26,8 @@ class WireController extends Controller
         $pagination = null;
         $wires = null;
 
-        $hasFilters = collect($filters)->except(['all', 'per_page'])->filter(fn($v) => !empty($v))->isNotEmpty();
-        $shouldLoadData = $hasFilters || !empty($filters['all']);
+        $hasFilters = collect($filters)->except(['all', 'per_page'])->filter(fn ($v) => ! empty($v))->isNotEmpty();
+        $shouldLoadData = $hasFilters || ! empty($filters['all']);
 
         if ($shouldLoadData) {
             [$paginated, $wires] = $this->service->getFilteredPaginatedList($filters);
@@ -80,7 +80,7 @@ class WireController extends Controller
 
         $result = $this->service->importFromFile($request->file('file'));
 
-        if (!empty($result['error'])) {
+        if (! empty($result['error'])) {
             return back()->withErrors(['file' => $result['error']]);
         }
 

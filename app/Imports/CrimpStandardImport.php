@@ -3,8 +3,8 @@
 namespace App\Imports;
 
 use App\Models\CrimpStandard;
-use App\Models\Terminal;
 use App\Models\Seal;
+use App\Models\Terminal;
 use App\Models\WireType;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
@@ -29,7 +29,7 @@ class CrimpStandardImport implements ToCollection, WithHeadingRow
 
             // Seal может быть пустым
             $seal = null;
-            if (!empty($row['seal'])) {
+            if (! empty($row['seal'])) {
                 $seal = Seal::where('seal_key', $row['seal'])->first();
             }
 
@@ -42,7 +42,7 @@ class CrimpStandardImport implements ToCollection, WithHeadingRow
 
             // WireType 2 (опционально)
             $wireType2 = null;
-            if (!empty($row['wire_type_id_2'])) {
+            if (! empty($row['wire_type_id_2'])) {
                 $wireType2 = WireType::where('name', $row['wire_type_id_2'])->first();
             }
 
@@ -101,6 +101,7 @@ class CrimpStandardImport implements ToCollection, WithHeadingRow
             return null;
         }
         $normalized = str_replace(',', '.', trim($value));
+
         return is_numeric($normalized) ? (float) $normalized : null;
     }
 
@@ -110,6 +111,7 @@ class CrimpStandardImport implements ToCollection, WithHeadingRow
             return null;
         }
         $normalized = trim($value);
+
         return is_numeric($normalized) ? (int) $normalized : null;
     }
 }

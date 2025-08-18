@@ -3,8 +3,8 @@
 namespace App\Services\CrimpStandard;
 
 use App\Models\CrimpStandard;
-use App\Models\Terminal;
 use App\Models\Seal;
+use App\Models\Terminal;
 use App\Models\WireType;
 use Illuminate\Http\Request;
 
@@ -16,13 +16,17 @@ class CrimpStandardService
 
         if ($request->filled('terminal')) {
             $terminal = Terminal::where('terminal_key', $request->input('terminal'))->first();
-            if (! $terminal) return collect();
+            if (! $terminal) {
+                return collect();
+            }
             $query->where('terminal_id', $terminal->id);
         }
 
         if ($request->filled('seal')) {
             $seal = Seal::where('seal_key', $request->input('seal'))->first();
-            if (! $seal) return collect();
+            if (! $seal) {
+                return collect();
+            }
             $query->where('seal_id', $seal->id);
         }
 
@@ -62,6 +66,6 @@ class CrimpStandardService
             'seal_id' => $seal?->id,
         ]);
 
-        return ['status' => 'success', 'message' => 'Кримп-стандарт ' . $terminal->terminal_key . ' успешно создан'];
+        return ['status' => 'success', 'message' => 'Кримп-стандарт '.$terminal->terminal_key.' успешно создан'];
     }
 }

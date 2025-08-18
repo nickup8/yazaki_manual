@@ -25,9 +25,8 @@ it('возвращает страницу Inertia с приложениями н
 
     $response->assertStatus(200);
 
-    $response->assertInertia(fn ($page) =>
-        $page->component('applications/application-index')
-            ->has('applications')
+    $response->assertInertia(fn ($page) => $page->component('applications/application-index')
+        ->has('applications')
     );
 });
 
@@ -42,9 +41,8 @@ it('возвращает страницу Inertia с сообщением усп
 
     $response->assertStatus(200);
 
-    $response->assertInertia(fn ($page) =>
-        $page->component('applications/application-create')
-            ->where('success', 'Тестовое сообщение об успехе')
+    $response->assertInertia(fn ($page) => $page->component('applications/application-create')
+        ->where('success', 'Тестовое сообщение об успехе')
     );
 });
 

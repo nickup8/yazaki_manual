@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TerminalStoreRequest;
 use App\Http\Resources\TerminalResource;
-
 use App\Services\Terminal\TerminalService;
 use Illuminate\Http\Request;
 

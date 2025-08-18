@@ -2,9 +2,9 @@
 
 namespace App\Services\CrimpStandard;
 
-use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\CrimpStandardImport;
 use Illuminate\Http\UploadedFile;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CrimpStandardImporter
 {

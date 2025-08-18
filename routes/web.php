@@ -8,11 +8,9 @@ use App\Http\Controllers\WireController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-
-
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/', function () {
-    return Inertia::render('welcome');
+        return Inertia::render('welcome');
     })->name('home');
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');

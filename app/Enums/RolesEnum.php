@@ -18,6 +18,7 @@ enum RolesEnum: string
     {
         return array_reduce(self::cases(), function ($carry, $role) {
             $carry[$role->value] = self::LABELS[$role->value];
+
             return $carry;
         }, []);
     }

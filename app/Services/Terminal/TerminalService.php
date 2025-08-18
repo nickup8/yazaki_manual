@@ -4,9 +4,9 @@ namespace App\Services\Terminal;
 
 use App\Imports\TerminalsImport;
 use App\Models\Terminal;
-use Illuminate\Support\Arr;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Arr;
 use Maatwebsite\Excel\Facades\Excel;
 
 class TerminalService
@@ -14,14 +14,13 @@ class TerminalService
     /**
      * Получить пагинированный список терминалов.
      * Если фильтров нет и all не передан — вернуть пустую пагинацию.
-     * 
-     * @param array $filters
+     *
      * @return LengthAwarePaginator|array Пагинация с данными или пустой массив
      */
     public function getFilteredPaginatedList(array $filters)
     {
-        $hasFilters = !empty($filters['terminal_key']) || !empty($filters['terminal_spn']);
-        $shouldLoadData = $hasFilters || !empty($filters['all']);
+        $hasFilters = ! empty($filters['terminal_key']) || ! empty($filters['terminal_spn']);
+        $shouldLoadData = $hasFilters || ! empty($filters['all']);
 
         if (! $shouldLoadData) {
             // Возвращаем пустую пагинацию с нулями
@@ -30,12 +29,12 @@ class TerminalService
 
         $query = Terminal::query();
 
-        if (!empty($filters['terminal_key'])) {
+        if (! empty($filters['terminal_key'])) {
             $query->where('terminal_key', $filters['terminal_key']);
         }
 
-        if (!empty($filters['terminal_spn'])) {
-            $query->where('terminal_spn', 'like', '%' . $filters['terminal_spn'] . '%');
+        if (! empty($filters['terminal_spn'])) {
+            $query->where('terminal_spn', 'like', '%'.$filters['terminal_spn'].'%');
         }
 
         return $query
@@ -76,7 +75,7 @@ class TerminalService
                 'importErrors' => $import->errors,
             ];
         } catch (\Throwable $e) {
-            return ['importErrors' => ['Ошибка при импорте: ' . $e->getMessage()]];
+            return ['importErrors' => ['Ошибка при импорте: '.$e->getMessage()]];
         }
     }
 }

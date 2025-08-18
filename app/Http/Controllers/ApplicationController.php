@@ -12,10 +12,12 @@ use Inertia\Response;
 class ApplicationController extends Controller
 {
     private ApplicationService $service;
+
     public function __construct(ApplicationService $service)
     {
         $this->service = $service;
     }
+
     public function index(Request $request): Response
     {
         $applications = $this->service->getFiltered($request);
@@ -32,7 +34,7 @@ class ApplicationController extends Controller
         ]);
     }
 
-    public function store(ApplicationStoreRequest $request,): RedirectResponse
+    public function store(ApplicationStoreRequest $request): RedirectResponse
     {
         $result = $this->service->createFromRequest($request);
 

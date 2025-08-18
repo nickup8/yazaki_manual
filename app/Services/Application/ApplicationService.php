@@ -13,9 +13,6 @@ class ApplicationService
 {
     /**
      * Получить отфильтрованные заявки с пагинацией по запросу.
-     *
-     * @param Request $request
-     * @return Collection|LengthAwarePaginator
      */
     public function getFiltered(Request $request): Collection|LengthAwarePaginator
     {
@@ -48,8 +45,7 @@ class ApplicationService
     /**
      * Создать аппликатор из валидированного запроса.
      *
-     * @param \Illuminate\Foundation\Http\FormRequest $request
-     * @return array
+     * @param  \Illuminate\Foundation\Http\FormRequest  $request
      *
      * @throws \Throwable
      */
@@ -88,7 +84,7 @@ class ApplicationService
 
         return [
             'status' => 'success',
-            'message' => 'Аппликатор ' . $data['inventory_key'] . ' успешно создан',
+            'message' => 'Аппликатор '.$data['inventory_key'].' успешно создан',
         ];
     }
 }

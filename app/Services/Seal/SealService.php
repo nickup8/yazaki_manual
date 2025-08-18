@@ -24,7 +24,7 @@ class SealService
         }
 
         if ($request->filled('seal_spn')) {
-            $query->where('seal_spn', 'like', '%' . $request->input('seal_spn') . '%');
+            $query->where('seal_spn', 'like', '%'.$request->input('seal_spn').'%');
         }
 
         return $query->paginate(10)->appends($request->all());
@@ -38,7 +38,7 @@ class SealService
         if (! $color) {
             return [
                 'status' => 'error',
-                'message' => ['seal_color_id' => 'Цвет уплотнителя не найден.']
+                'message' => ['seal_color_id' => 'Цвет уплотнителя не найден.'],
             ];
         }
 
@@ -52,7 +52,7 @@ class SealService
 
         return [
             'status' => 'success',
-            'message' => 'Уплотнитель ' . $seal->seal_key . ' успешно создан',
+            'message' => 'Уплотнитель '.$seal->seal_key.' успешно создан',
         ];
     }
 }
