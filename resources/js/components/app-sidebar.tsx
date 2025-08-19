@@ -3,7 +3,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { Book, LayoutGrid, RulerDimensionLine } from 'lucide-react';
+import { Book, GitMerge, LayoutGrid, RulerDimensionLine } from 'lucide-react';
 import { useMemo } from 'react';
 import AppLogo from './app-logo';
 
@@ -24,6 +24,11 @@ export function AppSidebar() {
                 title: 'Dashboard',
                 href: '/dashboard',
                 icon: LayoutGrid,
+            },
+            {
+                title: 'Список проводов',
+                href: '/leadsets',
+                icon: GitMerge,
             },
             {
                 title: 'Кримп стандарты',

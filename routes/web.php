@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\CrimpStandardController;
+use App\Http\Controllers\LeadsetController;
 use App\Http\Controllers\SealController;
 use App\Http\Controllers\TerminalController;
 use App\Http\Controllers\WireController;
@@ -56,6 +57,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('applications/create', [ApplicationController::class, 'create'])->name('applications.create');
 
     Route::post('applications/store', [ApplicationController::class, 'store'])->name('applications.store');
+
+
+
+Route::prefix('leadsets')->name('leadsets.')->group(function () {
+    Route::get('/', [LeadsetController::class, 'index'])->name('index');
+    Route::get('/create', [LeadsetController::class, 'create'])->name('create');
+    Route::post('/', [LeadsetController::class, 'store'])->name('store');
+
+    Route::get('/{leadset}/edit', [LeadsetController::class, 'edit'])->name('edit');
+    Route::put('/{leadset}', [LeadsetController::class, 'update'])->name('update');
+    Route::delete('/{leadset}', [LeadsetController::class, 'destroy'])->name('destroy');
+
+    // Можно добавить импорт/экспорт
+    Route::post('/import', [LeadsetController::class, 'import'])->name('import');
+    Route::get('/export', [LeadsetController::class, 'export'])->name('export');
+});
+
 
 });
 
