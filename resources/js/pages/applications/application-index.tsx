@@ -1,16 +1,32 @@
-import FormField from '@/components/form-field';
+import DynamicForm from '@/components/dynamic-form';
 import Heading from '@/components/heading';
 import Pagination from '@/components/pagination';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import AppLayout from '@/layouts/app-layout';
-import { ApplicationItem, PropsResponse } from '@/types';
-import { Head, Link, useForm } from '@inertiajs/react';
-import { CloudDownload, Loader2, Plus } from 'lucide-react';
+import { ApplicationItem, BreadcrumbItem, FieldConfig, PropsResponse } from '@/types';
+import { Head, Link, router, useForm } from '@inertiajs/react';
+import { CloudDownload, Plus } from 'lucide-react';
 import ApplicationTable from './application-table';
 
-export default function ApplicationIndex({ applications }: { applications: PropsResponse<ApplicationItem> }) {
-    const breadcrumbs = [{ title: 'Аппликаторы', href: '/applications' }];
+type FormValues = {
+    terminal: string;
+    application: string;
+};
+
+export default function ApplicationIndex({
+    applications,
+    queryParams,
+}: {
+    applications: PropsResponse<ApplicationItem>;
+    queryParams: Record<string, string>;
+}) {
+    const breadcrumbs: BreadcrumbItem[] = [{ title: 'Аппликаторы', href: '/applications' }];
+    const fields: FieldConfig<FormValues>[] = [
+        { name: 'terminal', label: 'Код терминала', type: 'text', id: 'terminal' },
+        { name: 'application', label: 'Инвентарный номер', type: 'text', id: 'application' },
+    ];
+
     const { data, setData, get, processing, errors } = useForm({
         terminal: '',
         application: '',
@@ -28,6 +44,19 @@ export default function ApplicationIndex({ applications }: { applications: Props
 
         get(url, {
             preserveState: true,
+        });
+    };
+
+    const onSubmit = (values: FormValues) => {
+        // Берём только непустые поля
+        const filtered = Object.fromEntries(Object.entries(values).filter(([, v]) => v.trim() !== ''));
+
+        // Не мутируем пропсы — собираем новый объект
+        const params = { ...queryParams, ...filtered };
+
+        router.get('/applications', params, {
+            preserveState: true,
+            preserveScroll: true,
         });
     };
     return (
@@ -77,7 +106,7 @@ export default function ApplicationIndex({ applications }: { applications: Props
                     </Tooltip> */}
                 </div>
                 <div className="border-b pb-4">
-                    <form className="flex gap-2" onSubmit={handleSubmit}>
+                    {/* <form className="flex gap-2" onSubmit={handleSubmit}>
                         <FormField
                             id="application"
                             label="Код аппликатора"
@@ -105,7 +134,16 @@ export default function ApplicationIndex({ applications }: { applications: Props
                                 Сбросить
                             </Button>
                         </div>
-                    </form>
+                    </form> */}
+
+                    <DynamicForm
+                        fields={fields}
+                        defaultValues={{
+                            terminal: '',
+                            application: '',
+                        }}
+                        onSubmit={onSubmit}
+                    />
                 </div>
                 {applications.data.length > 0 && (
                     <div className="mt-4">

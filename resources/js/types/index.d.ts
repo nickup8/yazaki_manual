@@ -1,4 +1,5 @@
 import { LucideIcon } from 'lucide-react';
+import { DefaultValues } from 'react-hook-form';
 import type { Config } from 'ziggy-js';
 
 export interface Auth {
@@ -172,3 +173,17 @@ export interface PropsResponse<T> {
     links: PaginationLinks;
     meta: PaginationMeta;
 }
+
+export type FieldConfig<T> = {
+    name: keyof T & string; // важно, чтобы name был строкой
+    label: string;
+    id: string;
+    type: 'text' | 'number' | 'select' | 'date';
+    options?: { value: string; label: string }[];
+};
+
+export type DynamicFormProps<T extends Record<string, any>> = {
+    fields: FieldConfig<T>[];
+    defaultValues?: DefaultValues<T>;
+    onSubmit: SubmitHandlerr<T>;
+};
