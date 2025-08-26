@@ -4,25 +4,19 @@ import Pagination from '@/components/pagination';
 
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
+import DynamicForm from '@/components/dynamic-form';
 import ImportLoader from '@/components/import-loader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useFileImport } from '@/hooks/use-file-import';
-import { useWireFilters } from '@/hooks/use-wire-filters';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem, Wire, WireColor, WireType } from '@/types';
+import { submitFilter } from '@/lib/utils';
+import { BreadcrumbItem, FieldConfig, Wire, WireColor, WireType } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
 import { CloudDownload, Import, Plus } from 'lucide-react';
-import { useState } from 'react';
-import WireFilterForm from './wire-filter-form';
 import WireTable from './wire-table';
 
 const breadcrumbs: BreadcrumbItem[] = [{ title: 'Провода', href: '/wires' }];
-
-type UploadProgress = {
-    percentage: number;
-    total: number | null;
-};
 
 type PaginatedWires = {
     data: Wire[];
@@ -41,63 +35,60 @@ type PaginatedWires = {
     };
 };
 
+type FormValues = {
+    wire_key: string;
+    description: string;
+    wire_type_id: string;
+    wire_color_base_id: string;
+    wire_color_add_id: string;
+};
+
 export default function WireIndex({
     wire_types,
     wire_colors,
     success,
     wires,
+    queryParams,
 }: {
     wire_types: WireType[];
     wire_colors: WireColor[];
     success: string;
     wires: PaginatedWires;
+    queryParams: Record<string, string>;
 }) {
-    const [isSearching, setIsSearching] = useState(false);
-    const [isResetting, setIsResetting] = useState(false);
+    const fields: FieldConfig<FormValues>[] = [
+        { name: 'wire_key', label: 'Код провода', id: 'wire_key', type: 'text' },
+        { name: 'description', label: 'Название', id: 'description', type: 'text' },
+        {
+            name: 'wire_type_id',
+            label: 'Тип провода',
+            id: 'wire_type_id',
+            type: 'select',
+            options: wire_types.map((t) => ({ value: String(t.id), label: t.name })),
+        },
+        {
+            name: 'wire_color_base_id',
+            label: 'Цвет основной',
+            id: 'wire_color_base_id',
+            type: 'select',
+            options: wire_colors.map((c) => ({ value: String(c.id), label: c.name })),
+        },
+        {
+            name: 'wire_color_add_id',
+            label: 'Цвет дополнительный',
+            id: 'wire_color_add_id',
+            type: 'select',
+            options: wire_colors.map((c) => ({ value: String(c.id), label: c.name })),
+        },
+    ];
 
-    const {
-        wireKey,
-        setWireKey,
-        description,
-        setDescription,
-        selectedTypeId,
-        setSelectedTypeId,
-        selectedColorBaseId,
-        setSelectedColorBaseId,
-        selectedColorAddId,
-        setSelectedColorAddId,
-        resetFilters,
-        hasAnyFilter,
-    } = useWireFilters(wire_types, wire_colors);
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        setIsSearching(true);
-        const query: Record<string, string> = {};
-
-        if (wireKey.trim()) query.wire_key = wireKey;
-        if (description.trim()) query.description = description;
-        if (selectedTypeId) query.wire_type_id = selectedTypeId;
-        if (selectedColorBaseId) query.wire_color_base_id = selectedColorBaseId;
-        if (selectedColorAddId) query.wire_color_add_id = selectedColorAddId;
-
-        router.get('/wires', query, {
+    const handleSubmit = (values: FormValues) => {
+        submitFilter<FormValues>({
+            url: '/wires',
+            queryParams: {},
+            values,
             preserveState: true,
-            onFinish: () => setIsSearching(false),
         });
-    };
-
-    const handleReset = () => {
-        setIsResetting(true);
-        resetFilters();
-        // router.get(
-        //     '/wires',
-        //     {},
-        //     {
-        //         preserveState: true,
-        //         onFinish: () => setIsResetting(false),
-        //     },
-        // );
     };
 
     const { fileInputRef, handleFileChange, processing, progress } = useFileImport(() => {
@@ -152,24 +143,16 @@ export default function WireIndex({
                     </Tooltip>
                 </div>
 
-                <WireFilterForm
-                    wire_types={wire_types}
-                    wire_colors={wire_colors}
-                    wireKey={wireKey}
-                    description={description}
-                    selectedTypeId={selectedTypeId}
-                    selectedColorBaseId={selectedColorBaseId}
-                    selectedColorAddId={selectedColorAddId}
-                    setWireKey={setWireKey}
-                    setDescription={setDescription}
-                    setSelectedTypeId={setSelectedTypeId}
-                    setSelectedColorBaseId={setSelectedColorBaseId}
-                    setSelectedColorAddId={setSelectedColorAddId}
-                    isSearching={isSearching}
-                    isResetting={isResetting}
-                    hasAnyFilter={hasAnyFilter}
-                    handleSubmit={handleSubmit}
-                    handleReset={handleReset}
+                <DynamicForm
+                    fields={fields}
+                    onSubmit={handleSubmit}
+                    defaultValues={{
+                        wire_key: '',
+                        description: '',
+                        wire_type_id: '',
+                        wire_color_base_id: '',
+                        wire_color_add_id: '',
+                    }}
                 />
 
                 {wires && (

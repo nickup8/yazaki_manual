@@ -1,11 +1,6 @@
 import InputError from '@/components/input-error';
-import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-
-interface Option {
-    value: string;
-    label: React.ReactNode;
-}
+import { Option } from '@/types';
 
 interface SelectFieldProps {
     id: string;
@@ -20,7 +15,6 @@ interface SelectFieldProps {
 export default function SelectField({ id, label, value, onChange, options, disabled = false, error }: SelectFieldProps) {
     return (
         <div>
-            <Label htmlFor={id}>{label}</Label>
             <Select value={value} onValueChange={onChange} disabled={disabled}>
                 <SelectTrigger className="w-[280px]">
                     <SelectValue />

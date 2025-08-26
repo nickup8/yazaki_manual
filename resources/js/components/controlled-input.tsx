@@ -14,7 +14,9 @@ function ControlledInputInner<T extends FieldValues>({ fieldConfig, control }: C
         <Controller
             name={fieldConfig.name as Path<T>} // строго указываем Path<T>
             control={control}
-            render={({ field }) => <FormField {...field} id={fieldConfig.id} label={fieldConfig.label} type={fieldConfig.type} />}
+            render={({ field }) => (
+                <FormField {...field} id={fieldConfig.id} label={fieldConfig.label} type={fieldConfig.type} options={fieldConfig.options} />
+            )}
         />
     );
 }

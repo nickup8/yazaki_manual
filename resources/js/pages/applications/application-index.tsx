@@ -4,8 +4,9 @@ import Pagination from '@/components/pagination';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import AppLayout from '@/layouts/app-layout';
+import { submitFilter } from '@/lib/utils';
 import { ApplicationItem, BreadcrumbItem, FieldConfig, PropsResponse } from '@/types';
-import { Head, Link, router, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { CloudDownload, Plus } from 'lucide-react';
 import ApplicationTable from './application-table';
 
@@ -32,29 +33,26 @@ export default function ApplicationIndex({
         application: '',
     });
     console.log(applications);
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    // const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    //     e.preventDefault();
 
-        const params = new URLSearchParams();
+    //     const params = new URLSearchParams();
 
-        if (data.terminal.trim()) params.append('terminal', data.terminal.trim());
-        if (data.application.trim()) params.append('application', data.application.trim());
+    //     if (data.terminal.trim()) params.append('terminal', data.terminal.trim());
+    //     if (data.application.trim()) params.append('application', data.application.trim());
 
-        const url = params.toString() ? `/applications?${params.toString()}` : '/applications';
+    //     const url = params.toString() ? `/applications?${params.toString()}` : '/applications';
 
-        get(url, {
-            preserveState: true,
-        });
-    };
+    //     get(url, {
+    //         preserveState: true,
+    //     });
+    // };
 
     const onSubmit = (values: FormValues) => {
-        // Берём только непустые поля
-        const filtered = Object.fromEntries(Object.entries(values).filter(([, v]) => v.trim() !== ''));
-
-        // Не мутируем пропсы — собираем новый объект
-        const params = { ...queryParams, ...filtered };
-
-        router.get('/applications', params, {
+        submitFilter({
+            url: '/applications',
+            queryParams,
+            values,
             preserveState: true,
             preserveScroll: true,
         });

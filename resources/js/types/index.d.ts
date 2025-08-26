@@ -174,16 +174,29 @@ export interface PropsResponse<T> {
     meta: PaginationMeta;
 }
 
+export interface Option {
+    value: string;
+    label: React.ReactNode;
+}
+
 export type FieldConfig<T> = {
     name: keyof T & string; // важно, чтобы name был строкой
     label: string;
     id: string;
     type: 'text' | 'number' | 'select' | 'date';
-    options?: { value: string; label: string }[];
+    options?: Option[];
 };
 
 export type DynamicFormProps<T extends Record<string, any>> = {
     fields: FieldConfig<T>[];
     defaultValues?: DefaultValues<T>;
     onSubmit: SubmitHandlerr<T>;
+};
+
+export type SubmitFilterOptions<FormValues> = {
+    url: string;
+    queryParams?: Record<string, string>;
+    values: FormValues;
+    preserveState?: boolean;
+    preserveScroll?: boolean;
 };
