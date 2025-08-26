@@ -48,7 +48,7 @@ export default function WireIndex({
     wire_colors,
     success,
     wires,
-    queryParams,
+    queryParams = {},
 }: {
     wire_types: WireType[];
     wire_colors: WireColor[];
@@ -85,7 +85,7 @@ export default function WireIndex({
     const handleSubmit = (values: FormValues) => {
         submitFilter<FormValues>({
             url: '/wires',
-            queryParams: {},
+
             values,
             preserveState: true,
         });
@@ -94,6 +94,10 @@ export default function WireIndex({
     const { fileInputRef, handleFileChange, processing, progress } = useFileImport(() => {
         router.visit('/wires', { only: ['wires'], preserveState: true });
     });
+
+    const defaultValues = Object.fromEntries(fields.map((f) => [f.name, queryParams?.[f.name] ?? ''])) as FormValues;
+
+    console.log(queryParams);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -143,17 +147,7 @@ export default function WireIndex({
                     </Tooltip>
                 </div>
 
-                <DynamicForm
-                    fields={fields}
-                    onSubmit={handleSubmit}
-                    defaultValues={{
-                        wire_key: '',
-                        description: '',
-                        wire_type_id: '',
-                        wire_color_base_id: '',
-                        wire_color_add_id: '',
-                    }}
-                />
+                <DynamicForm fields={fields} onSubmit={handleSubmit} defaultValues={defaultValues} />
 
                 {wires && (
                     <>

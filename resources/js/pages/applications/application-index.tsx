@@ -6,7 +6,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import AppLayout from '@/layouts/app-layout';
 import { submitFilter } from '@/lib/utils';
 import { ApplicationItem, BreadcrumbItem, FieldConfig, PropsResponse } from '@/types';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { CloudDownload, Plus } from 'lucide-react';
 import ApplicationTable from './application-table';
 
@@ -17,7 +17,7 @@ type FormValues = {
 
 export default function ApplicationIndex({
     applications,
-    queryParams,
+    queryParams = {},
 }: {
     applications: PropsResponse<ApplicationItem>;
     queryParams: Record<string, string>;
@@ -28,35 +28,16 @@ export default function ApplicationIndex({
         { name: 'application', label: 'Инвентарный номер', type: 'text', id: 'application' },
     ];
 
-    const { data, setData, get, processing, errors } = useForm({
-        terminal: '',
-        application: '',
-    });
-    console.log(applications);
-    // const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    //     e.preventDefault();
-
-    //     const params = new URLSearchParams();
-
-    //     if (data.terminal.trim()) params.append('terminal', data.terminal.trim());
-    //     if (data.application.trim()) params.append('application', data.application.trim());
-
-    //     const url = params.toString() ? `/applications?${params.toString()}` : '/applications';
-
-    //     get(url, {
-    //         preserveState: true,
-    //     });
-    // };
-
     const onSubmit = (values: FormValues) => {
         submitFilter({
             url: '/applications',
-            queryParams,
             values,
             preserveState: true,
             preserveScroll: true,
         });
     };
+
+    const defaultValues = Object.fromEntries(fields.map((f) => [f.name, queryParams?.[f.name] ?? ''])) as FormValues;
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Аппликаторы" />
@@ -134,14 +115,7 @@ export default function ApplicationIndex({
                         </div>
                     </form> */}
 
-                    <DynamicForm
-                        fields={fields}
-                        defaultValues={{
-                            terminal: '',
-                            application: '',
-                        }}
-                        onSubmit={onSubmit}
-                    />
+                    <DynamicForm fields={fields} defaultValues={defaultValues} onSubmit={onSubmit} />
                 </div>
                 {applications.data.length > 0 && (
                     <div className="mt-4">

@@ -24,6 +24,9 @@ class ApplicationController extends Controller
 
         return inertia('applications/application-index', [
             'applications' => ApplicationResource::collection($applications),
+            'success' => session('success'),
+            'errors' => session('errors'),
+            'queryParams' => $request->all(),
         ]);
     }
 

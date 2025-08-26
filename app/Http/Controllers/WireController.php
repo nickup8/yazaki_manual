@@ -39,6 +39,8 @@ class WireController extends Controller
                 'links' => $paginated->linkCollection(),
             ];
         }
+        $queryParams = array_filter($request->all(), fn($v) => $v !== null && $v !== '');
+
 
         return inertia('wires/wire-index', [
             'wire_types' => WireType::all(),
@@ -47,6 +49,8 @@ class WireController extends Controller
             'pagination' => $pagination,
             'filters' => $filters,
             'success' => session('success'),
+            'error' => session('error'),
+            'queryParams' => $queryParams,
         ]);
     }
 
