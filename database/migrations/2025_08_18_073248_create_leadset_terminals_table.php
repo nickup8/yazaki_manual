@@ -12,13 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('leadset_terminals', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('leadset_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('terminal_id')->constrained()->cascadeOnDelete();
-            $table->decimal('part_strip_length', 8, 2)->nullable();
-            $table->text('note')->nullable(); // заполняется вручную через UI
-            $table->timestamps();
-        });
+    $table->id();
+    $table->foreignId('leadset_id')->constrained()->cascadeOnDelete();
+    $table->foreignId('terminal_id')->nullable()->constrained()->nullOnDelete(); // <- nullable для null
+    $table->decimal('part_strip_length', 8, 2)->nullable();
+    $table->text('note')->nullable();
+    $table->integer('position')->nullable();
+    $table->timestamps();
+});
     }
 
     /**

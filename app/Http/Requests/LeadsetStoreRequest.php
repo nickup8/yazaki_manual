@@ -14,14 +14,22 @@ class LeadsetStoreRequest extends FormRequest
 
     public function rules(): array
     {
+        $leadsetId = $this->route('leadset')?->id; 
+        // или $this->leadset, если биндинг по модели
+
         return [
-            'leadset' => ['required', 'string', 'max:255', 'unique:leadsets,leadset'],
-            'prod_version' => ['required', 'integer', 'min:1'],
-            'description' => ['required', 'string', 'max:1000'],
-            'vendor_code' => ['nullable', 'string', 'max:255'],
-            'cable_class' => ['nullable', 'string', 'max:255'],
-            'batch_size' => ['nullable', 'integer', 'min:1'],
-            'plan_time_batch' => ['nullable', 'numeric', 'between:0,9999.99'],
+            'Leadset' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('leadsets', 'leadset')->ignore($leadsetId),
+            ],
+            'ProdVersion' => ['required', 'integer', 'min:1'],
+            'Description' => ['required', 'string', 'max:1000'],
+            'VendorCode' => ['nullable', 'string', 'max:255'],
+            'CableClass' => ['nullable', 'string', 'max:255'],
+            'BatchSize' => ['nullable', 'integer', 'min:1'],
+            'PlanTimeBatch' => ['nullable', 'numeric', 'between:0,9999.99'],
 
             // Провода (wire_ids) — массив существующих ID
             'wires' => ['required', 'array', 'min:1'],

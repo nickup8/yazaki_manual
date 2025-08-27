@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\LeadsetStoreRequest;
+use App\Http\Resources\LeadsetResource;
 use App\Models\Wire;
 use App\Models\Terminal;
 use App\Models\Seal;
@@ -17,40 +18,43 @@ class LeadsetController extends Controller
      * Список Leadset с фильтрацией и пагинацией
      */
     public function index(Request $request)
-    {
-        $filters = $request->only([
-            'leadset',
-            'description',
-            'all',
-            'per_page',
-        ]);
+{
+    $filters = $request->only([
+        'leadset',
+        'description',
+        'all',
+        'per_page',
+    ]);
 
-        $leadsets = null;
-        $pagination = null;
+    $leadsets = collect(); // пустая коллекция по умолчанию
+    $pagination = null;
 
-        $hasFilters = collect($filters)->except(['all', 'per_page'])->filter(fn($v) => !empty($v))->isNotEmpty();
-        $shouldLoadData = $hasFilters || !empty($filters['all']);
+    $hasFilters = collect($filters)->except(['all', 'per_page'])->filter(fn($v) => !empty($v))->isNotEmpty();
+    $shouldLoadData = $hasFilters || !empty($filters['all']);
 
-        if ($shouldLoadData) {
-            $paginated = $this->service->getFilteredPaginatedList($filters);
-            $leadsets = $paginated->items();
+    if ($shouldLoadData) {
+        $paginated = $this->service->getFilteredPaginatedList($filters);
 
-            $pagination = [
-                'current_page' => $paginated->currentPage(),
-                'last_page' => $paginated->lastPage(),
-                'per_page' => $paginated->perPage(),
-                'total' => $paginated->total(),
-                'links' => $paginated->linkCollection(),
-            ];
-        }
+        // Используем коллекцию моделей вместо массива
+        $leadsets = $paginated->getCollection();
 
-        return inertia('leadsets/leadset-index', [
-            'leadsets' => $leadsets,
-            'pagination' => $pagination,
-            'filters' => $filters,
-            'success' => session('success'),
-        ]);
+        $pagination = [
+            'current_page' => $paginated->currentPage(),
+            'last_page' => $paginated->lastPage(),
+            'per_page' => $paginated->perPage(),
+            'total' => $paginated->total(),
+            'links' => $paginated->linkCollection(),
+        ];
     }
+
+    return inertia('leadsets/leadset-index', [
+        'leadsets' => LeadsetResource::collection($leadsets),
+        'pagination' => $pagination,
+        'filters' => $filters,
+        'success' => session('success'),
+    ]);
+}
+
 
     /**
      * Форма создания Leadset

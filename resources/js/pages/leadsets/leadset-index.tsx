@@ -11,9 +11,9 @@ import { CloudDownload, Import, Plus } from 'lucide-react';
 import { toast } from 'sonner';
 import LeadsetFilterForm from './leadset-filter-form';
 
-export default function LeadsetIndex() {
+export default function LeadsetIndex({ leadsets }: any) {
     const breadcrumbs: BreadcrumbItem[] = [{ title: 'Полуфабрикаты', href: '/leadsets' }];
-
+    console.log(leadsets);
     const { fileInputRef, handleFileChange, processing, progress } = useFileImport({
         url: route('leadsets.import'),
         onSuccess: () => toast.success('Импорт успешно завершен!'),

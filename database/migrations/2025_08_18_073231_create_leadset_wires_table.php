@@ -12,11 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('leadset_wires', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('leadset_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('wire_id')->constrained()->cascadeOnDelete();
-            $table->timestamps();
-        });
+    $table->id();
+    $table->foreignId('leadset_id')->constrained()->cascadeOnDelete();
+    $table->foreignId('wire_id')->nullable()->constrained()->nullOnDelete(); // <- nullable для возможности null
+    $table->integer('position')->nullable();
+    $table->timestamps();
+});
     }
 
     /**

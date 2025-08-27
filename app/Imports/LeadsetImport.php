@@ -16,73 +16,107 @@ class LeadsetImport implements ToCollection, WithHeadingRow
     public array $errors = [];
     public int $successCount = 0;
 
+    protected array $map = [
+        'leadset'       => 'leadset',
+        'prodversion'   => 'prod_version',
+        'description'   => 'description',
+        'vendorcode'    => 'vendor_code',
+        'cableclass'    => 'cable_class',
+        'batchsize'     => 'batch_size',
+        'plantimebatch' => 'plan_time_batch',
+
+        // провода
+        'wire1key' => 'wire1_key',
+        'wire2key' => 'wire2_key',
+        'wire3key' => 'wire3_key',
+
+        // терминалы
+        'terminal1key' => 'terminal1_key',
+        'terminal2key' => 'terminal2_key',
+        'terminal3key' => 'terminal3_key',
+
+        // уплотнители
+        'seal1key' => 'seal1_key',
+        'seal2key' => 'seal2_key',
+        'seal3key' => 'seal3_key',
+    ];
+
     public function collection(Collection $rows)
     {
         foreach ($rows as $index => $row) {
-            // Пропускаем полностью пустые строки
-            if ($row->filter()->isEmpty()) {
-                continue;
-            }
+            if ($row->filter()->isEmpty()) continue;
 
             try {
-                $leadsetKey = trim($row['leadset']);
-                $prodVersion = $row['prod_version'];
-                $description = $row['description'] ?? '';
-                $vendorCode = $row['vendor_code'] ?? null;
-                $cableClass = $row['cable_class'] ?? null;
-                $batchSize = $row['batch_size'] ?? null;
-                $planTimeBatch = $row['plan_time_batch'] ?? null;
+                $rowArray = array_change_key_case($row->toArray(), CASE_LOWER);
 
-                if (Leadset::where('leadset', $leadsetKey)->exists()) {
-                    $this->errors[] = "Строка {$index}: Leadset {$leadsetKey} уже существует";
-                    continue;
+                $normalized = [];
+                foreach ($this->map as $source => $target) {
+                    $normalized[$target] = $rowArray[$source] ?? null;
                 }
 
-                $leadset = Leadset::create([
-                    'leadset' => $leadsetKey,
-                    'prod_version' => $prodVersion,
-                    'description' => $description,
-                    'vendor_code' => $vendorCode,
-                    'cable_class' => $cableClass,
-                    'batch_size' => $batchSize,
-                    'plan_time_batch' => $planTimeBatch,
-                ]);
+                $leadset = Leadset::updateOrCreate(
+                    ['leadset' => trim($normalized['leadset'])],
+                    [
+                        'prod_version'    => $normalized['prod_version'],
+                        'description'     => $normalized['description'] ?? '',
+                        'vendor_code'     => $normalized['vendor_code'] ?? null,
+                        'cable_class'     => $normalized['cable_class'] ?? null,
+                        'batch_size'      => $normalized['batch_size'] ?? null,
+                        'plan_time_batch' => $normalized['plan_time_batch'] ?? null,
+                    ]
+                );
 
-                // Привязка проводов (comma separated в колонке wires)
-                if (! empty($row['wires'])) {
-                    $wireKeys = array_map('trim', explode(',', $row['wires']));
-                    $wireIds = Wire::whereIn('wire_key', $wireKeys)->pluck('id')->toArray();
-                    $leadset->wires()->sync($wireIds);
+                // === Провода ===
+                $wireKeys = [
+                    $normalized['wire1_key'],
+                    $normalized['wire2_key'],
+                    $normalized['wire3_key'],
+                ];
+
+                $leadset->wires()->detach();
+                foreach ($wireKeys as $pos => $key) {
+                    $wireId = $key ? Wire::where('wire_key', $key)->value('id') : null;
+                    $leadset->wires()->attach($wireId, ['position' => $pos]);
                 }
 
-                // Привязка терминалов (comma separated, опционально part_strip_length и note)
-                if (! empty($row['terminals'])) {
-                    $terminalsData = [];
-                    $terminals = array_map('trim', explode(',', $row['terminals']));
-                    foreach ($terminals as $terminalKey) {
-                        $terminal = Terminal::where('terminal_key', $terminalKey)->first();
-                        if ($terminal) {
-                            $terminalsData[$terminal->id] = [
-                                'part_strip_length' => $row['part_strip_length'] ?? null,
-                                'note' => $row['note'] ?? null,
-                            ];
-                        }
-                    }
-                    $leadset->terminals()->sync($terminalsData);
+                // === Терминалы ===
+                $terminalKeys = [
+                    $normalized['terminal1_key'],
+                    $normalized['terminal2_key'],
+                    $normalized['terminal3_key'],
+                ];
+
+                $leadset->terminals()->detach();
+                foreach ($terminalKeys as $pos => $key) {
+                    $terminal = $key ? Terminal::where('terminal_key', $key)->first() : null;
+                    $leadset->terminals()->attach(
+                        $terminal?->id,
+                        [
+                            'position'          => $pos,
+                            'part_strip_length' => $normalized['part_strip_length'] ?? null,
+                            'note'              => $normalized['note'] ?? null,
+                        ]
+                    );
                 }
 
-                // Привязка уплотнителей (comma separated)
-                if (! empty($row['seals'])) {
-                    $sealKeys = array_map('trim', explode(',', $row['seals']));
-                    $sealIds = Seal::whereIn('seal_key', $sealKeys)->pluck('id')->toArray();
-                    $leadset->seals()->sync($sealIds);
+                // === Уплотнители ===
+                $sealKeys = [
+                    $normalized['seal1_key'],
+                    $normalized['seal2_key'],
+                    $normalized['seal3_key'],
+                ];
+
+                $leadset->seals()->detach();
+                foreach ($sealKeys as $pos => $key) {
+                    $sealId = $key ? Seal::where('seal_key', $key)->value('id') : null;
+                    $leadset->seals()->attach($sealId, ['position' => $pos]);
                 }
 
                 $this->successCount++;
             } catch (\Throwable $e) {
                 $this->errors[] = "Строка {$index}: Ошибка импорта - {$e->getMessage()}";
                 Log::error('Ошибка при импорте Leadset', [
-                    'row' => $row->toArray(),
+                    'row'   => $row->toArray(),
                     'error' => $e->getMessage(),
                 ]);
             }
