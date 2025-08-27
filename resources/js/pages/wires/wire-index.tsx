@@ -12,8 +12,9 @@ import { useFileImport } from '@/hooks/use-file-import';
 import AppLayout from '@/layouts/app-layout';
 import { submitFilter } from '@/lib/utils';
 import { BreadcrumbItem, FieldConfig, Wire, WireColor, WireType } from '@/types';
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { CloudDownload, Import, Plus } from 'lucide-react';
+import { toast } from 'sonner';
 import WireTable from './wire-table';
 
 const breadcrumbs: BreadcrumbItem[] = [{ title: 'Провода', href: '/wires' }];
@@ -91,13 +92,12 @@ export default function WireIndex({
         });
     };
 
-    const { fileInputRef, handleFileChange, processing, progress } = useFileImport(() => {
-        router.visit('/wires', { only: ['wires'], preserveState: true });
+    const { fileInputRef, handleFileChange, processing, progress } = useFileImport({
+        url: route('wires.import'),
+        onSuccess: () => toast.success('Импорт успешно завершен!'),
     });
 
     const defaultValues = Object.fromEntries(fields.map((f) => [f.name, queryParams?.[f.name] ?? ''])) as FormValues;
-
-    console.log(queryParams);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>

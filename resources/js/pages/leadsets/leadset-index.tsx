@@ -1,14 +1,23 @@
 import Heading from '@/components/heading';
+import ImportLoader from '@/components/import-loader';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { useFileImport } from '@/hooks/use-file-import';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 import { CloudDownload, Import, Plus } from 'lucide-react';
+import { toast } from 'sonner';
 import LeadsetFilterForm from './leadset-filter-form';
 
 export default function LeadsetIndex() {
     const breadcrumbs: BreadcrumbItem[] = [{ title: 'Полуфабрикаты', href: '/leadsets' }];
+
+    const { fileInputRef, handleFileChange, processing, progress } = useFileImport({
+        url: route('leadsets.import'),
+        onSuccess: () => toast.success('Импорт успешно завершен!'),
+    });
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Список проводов" />
@@ -41,7 +50,7 @@ export default function LeadsetIndex() {
                         <TooltipTrigger asChild>
                             <Button variant="ghost" size="icon" className="relative ml-2 overflow-hidden border border-sidebar-border/50">
                                 <Import />
-                                {/* <Input
+                                <Input
                                     ref={fileInputRef}
                                     type="file"
                                     name="file"
@@ -49,7 +58,7 @@ export default function LeadsetIndex() {
                                     className="absolute top-0 left-0 h-full w-full cursor-pointer opacity-0"
                                     onChange={handleFileChange}
                                     disabled={processing}
-                                /> */}
+                                />
                             </Button>
                         </TooltipTrigger>
                         <TooltipContent>Импорт из файла</TooltipContent>
@@ -57,6 +66,7 @@ export default function LeadsetIndex() {
                 </div>
                 <LeadsetFilterForm />
             </div>
+            {processing && <ImportLoader percentage={progress.percentage} total={progress.total} />}
         </AppLayout>
     );
 }

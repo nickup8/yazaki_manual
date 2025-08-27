@@ -7,10 +7,19 @@ interface UploadProgress {
     total: number | null;
 }
 
-export function useFileImport(onSuccess: () => void) {
+interface UseFileImportOptions {
+    url: string; // <-- теперь путь задаётся извне
+    onSuccess: () => void;
+}
+
+export function useFileImport({ url, onSuccess }: UseFileImportOptions) {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [processing, setProcessing] = useState(false);
-    const [progress, setProgress] = useState<UploadProgress>({ percentage: 0, total: null });
+    const [progress, setProgress] = useState<UploadProgress>({
+        percentage: 0,
+        total: null,
+    });
+
     const { reset } = useForm<{ file: File | null }>({ file: null });
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,7 +32,7 @@ export function useFileImport(onSuccess: () => void) {
         setProcessing(true);
         setProgress({ percentage: 0, total: null });
 
-        router.post(route('wires.import'), formData, {
+        router.post(url, formData, {
             forceFormData: true,
             preserveScroll: true,
             onProgress: (event?: AxiosProgressEvent) => {
@@ -42,5 +51,10 @@ export function useFileImport(onSuccess: () => void) {
         });
     };
 
-    return { fileInputRef, handleFileChange, processing, progress };
+    return {
+        fileInputRef,
+        handleFileChange,
+        processing,
+        progress,
+    };
 }
