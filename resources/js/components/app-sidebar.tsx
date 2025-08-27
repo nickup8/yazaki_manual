@@ -24,16 +24,19 @@ export function AppSidebar() {
                 title: 'Dashboard',
                 href: '/dashboard',
                 icon: LayoutGrid,
+                isActive: url.includes('/dashboard'),
             },
             {
                 title: 'Список проводов',
                 href: '/leadsets',
                 icon: GitMerge,
+                isActive: url.includes('/leadsets'),
             },
             {
                 title: 'Кримп стандарты',
                 href: '/crimp_standards',
                 icon: RulerDimensionLine,
+                isActive: url.includes('/crimp_standards'),
             },
             {
                 title: 'Справочники',
@@ -43,22 +46,22 @@ export function AppSidebar() {
                     {
                         title: 'Аппликаторы',
                         href: '/applications',
-                        isActive: url.startsWith('/applications'),
+                        isActive: url.includes('/applications'),
                     },
                     {
                         title: 'Провода',
                         href: '/wires',
-                        isActive: url.startsWith('/wires'),
+                        isActive: url.includes('/wires'),
                     },
                     {
                         title: 'Терминалы',
                         href: '/terminals',
-                        isActive: url.startsWith('/terminals'),
+                        isActive: url.includes('/terminals'),
                     },
                     {
                         title: 'Уплотнители',
                         href: '/seals',
-                        isActive: url.startsWith('/seals'),
+                        isActive: url.includes('/seals'),
                     },
                 ],
             },

@@ -91,7 +91,7 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                 </Collapsible>
                             ) : (
                                 <SidebarMenuItem key={item.title}>
-                                    <SidebarMenuButton asChild isActive={item.href === page.url} tooltip={{ children: item.title }}>
+                                    <SidebarMenuButton asChild isActive={item.isActive} tooltip={{ children: item.title }}>
                                         <Link href={item.href} prefetch>
                                             {item.icon && <item.icon />}
                                             <span>{item.title}</span>
