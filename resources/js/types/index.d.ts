@@ -95,6 +95,9 @@ export interface Terminal {
     description: string;
     created_at: string;
     updated_at: string;
+    note: string;
+    position: number;
+    part_strip_length: number;
 }
 
 export interface Seal {
