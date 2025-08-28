@@ -15,6 +15,7 @@ return new class extends Migration
     $table->id();
     $table->foreignId('leadset_id')->constrained()->cascadeOnDelete();
     $table->foreignId('wire_id')->nullable()->constrained()->nullOnDelete(); // <- nullable для возможности null
+    $table->string('wire_name')->nullable();
     $table->integer('position')->nullable();
     $table->timestamps();
 });

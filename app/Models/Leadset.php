@@ -14,7 +14,7 @@ class Leadset extends Model
     public function wires()
     {
         return $this->belongsToMany(Wire::class, 'leadset_wires')
-            ->withPivot('position')
+            ->withPivot('position', 'wire_name')
             ->withTimestamps();
     }
 

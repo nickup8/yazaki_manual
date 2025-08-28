@@ -29,6 +29,9 @@ class LeadsetImport implements ToCollection, WithHeadingRow
         'wire1key' => 'wire1_key',
         'wire2key' => 'wire2_key',
         'wire3key' => 'wire3_key',
+        'wire1name' => 'wire1_name',
+        'wire2name' => 'wire2_name',
+        'wire3name' => 'wire3_name',
 
         // терминалы
         'terminal1key' => 'terminal1_key',
@@ -67,17 +70,20 @@ class LeadsetImport implements ToCollection, WithHeadingRow
                 );
 
                 // === Провода ===
-                $wireKeys = [
-                    $normalized['wire1_key'],
-                    $normalized['wire2_key'],
-                    $normalized['wire3_key'],
-                ];
+                $wireData = [
+    ['key' => $normalized['wire1_key'], 'name' => $normalized['wire1_name']],
+    ['key' => $normalized['wire2_key'], 'name' => $normalized['wire2_name']],
+    ['key' => $normalized['wire3_key'], 'name' => $normalized['wire3_name']],
+];
 
-                $leadset->wires()->detach();
-                foreach ($wireKeys as $pos => $key) {
-                    $wireId = $key ? Wire::where('wire_key', $key)->value('id') : null;
-                    $leadset->wires()->attach($wireId, ['position' => $pos]);
-                }
+$leadset->wires()->detach();
+foreach ($wireData as $pos => $data) {
+    $wireId = $data['key'] ? Wire::where('wire_key', $data['key'])->value('id') : null;
+    $leadset->wires()->attach($wireId, [
+        'position'  => $pos,
+        'wire_name' => $data['name'] ?? null,
+    ]);
+}
 
                 // === Терминалы ===
                 $terminalKeys = [
