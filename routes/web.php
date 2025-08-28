@@ -72,6 +72,8 @@ Route::prefix('leadsets')->name('leadsets.')->group(function () {
     // Можно добавить импорт/экспорт
     Route::post('/import', [LeadsetController::class, 'import'])->name('import');
     Route::get('/export', [LeadsetController::class, 'export'])->name('export');
+    Route::get('{leadset}', [LeadsetController::class, 'show'])->name('show');
+
 });
 
 

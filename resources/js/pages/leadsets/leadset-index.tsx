@@ -10,6 +10,7 @@ import { Head, Link } from '@inertiajs/react';
 import { CloudDownload, Import, Plus } from 'lucide-react';
 import { toast } from 'sonner';
 import LeadsetFilterForm from './leadset-filter-form';
+import LeadsetTable from './leadsety-table';
 
 export default function LeadsetIndex({ leadsets }: any) {
     const breadcrumbs: BreadcrumbItem[] = [{ title: 'Полуфабрикаты', href: '/leadsets' }];
@@ -38,12 +39,12 @@ export default function LeadsetIndex({ leadsets }: any) {
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Button asChild variant="ghost" size="icon" className="ml-2 border border-sidebar-border/50">
-                                <Link href={route('wires.index', { all: true })}>
+                                <Link href={route('leadsets.index', { all: true })}>
                                     <CloudDownload />
                                 </Link>
                             </Button>
                         </TooltipTrigger>
-                        <TooltipContent>Показать все провода</TooltipContent>
+                        <TooltipContent>Показать все полуфабрикаты</TooltipContent>
                     </Tooltip>
 
                     <Tooltip>
@@ -65,6 +66,7 @@ export default function LeadsetIndex({ leadsets }: any) {
                     </Tooltip>
                 </div>
                 <LeadsetFilterForm />
+                <LeadsetTable leadsets={leadsets.data} />
             </div>
             {processing && <ImportLoader percentage={progress.percentage} total={progress.total} />}
         </AppLayout>

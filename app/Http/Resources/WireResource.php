@@ -29,6 +29,8 @@ class WireResource extends JsonResource
             'wire_color_add4' => $this->resource->wire_color_add4,
             'created_at' => $this->resource->created_at,
             'updated_at' => $this->resource->updated_at,
+            
+        'position' => $this->pivot?->position,
         ];
     }
 }

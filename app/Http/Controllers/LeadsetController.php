@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LeadsetStoreRequest;
 use App\Http\Resources\LeadsetResource;
+use App\Models\Leadset;
 use App\Models\Wire;
 use App\Models\Terminal;
 use App\Models\Seal;
@@ -101,5 +102,13 @@ class LeadsetController extends Controller
         }
 
         return redirect()->route('leadsets.index')->with('success', 'Leadset успешно импортированы');
+    }
+
+    public function show(Leadset $leadset)
+    {
+        return inertia('leadsets/leadset-show', [
+            'leadset' => new LeadsetResource($leadset),
+            
+        ]);
     }
 }

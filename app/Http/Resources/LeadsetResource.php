@@ -27,33 +27,9 @@ class LeadsetResource extends JsonResource
             'updated_at' => $this->updated_at,
 
             // Терминалы с pivot-данными
-            'terminals' => $this->terminals->map(function ($terminal) {
-                return [
-                    'id' => $terminal?->id,
-                    'terminal_key' => $terminal?->terminal_key,
-                    'part_strip_length' => $terminal?->pivot?->part_strip_length,
-                    'note' => $terminal?->pivot?->note,
-                    'position' => $terminal?->pivot?->position,
-                ];
-            }),
-
-            // Уплотнители с pivot-данными
-            'seals' => $this->seals->map(function ($seal) {
-                return [
-                    'id' => $seal?->id,
-                    'seal_key' => $seal?->seal_key,
-                    'position' => $seal?->pivot?->position,
-                ];
-            }),
-
-            // Провода, если нужно
-            'wires' => $this->wires->map(function ($wire) {
-                return [
-                    'id' => $wire?->id,
-                    'wire_key' => $wire?->wire_key,
-                    'position' => $wire?->pivot?->position,
-                ];
-            }),
+            'terminals' => TerminalResource::collection($this->terminals),
+        'seals' => SealResource::collection($this->seals),
+        'wires' => WireResource::collection($this->wires),
         ];
     }
 }

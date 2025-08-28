@@ -22,6 +22,9 @@ class TerminalResource extends JsonResource
             'description' => $this->resource->description,
             'created_at' => $this->resource->created_at,
             'updated_at' => $this->resource->updated_at,
+            'part_strip_length' => $this->pivot?->part_strip_length,
+        'note' => $this->pivot?->note,
+        'position' => $this->pivot?->position,
         ];
     }
 }
