@@ -1,4 +1,5 @@
-import { Terminal } from '@/types';
+import { Terminal, Wire } from '@/types';
+import { useState } from 'react';
 
 export default function DoubleCrimpCable({ leadset }: { leadset: any }) {
     const contactWidth = 50;
@@ -12,7 +13,7 @@ export default function DoubleCrimpCable({ leadset }: { leadset: any }) {
     const rightLowerContactX = 450;
     const rightLowerContactY = 125;
 
-    const textOffsetUpper = 25;
+    let textOffsetUpper = 25;
     const textOffsetLower = 25;
     const textOffsetThird = 50;
 
@@ -26,140 +27,197 @@ export default function DoubleCrimpCable({ leadset }: { leadset: any }) {
     const terminalIndex3 = leadset.terminals.findIndex((pos: Terminal) => pos.position === 2);
     const terminalIndex4 = leadset.terminals.findIndex((pos: Terminal) => pos.position === 3); // новый для третьего провода слева
 
+    const wireIndex1 = leadset.wires.findIndex((pos: Wire) => pos.position === 0);
+    const wireIndex2 = leadset.wires.findIndex((pos: Wire) => pos.position === 1);
+    const wireIndex3 = leadset.wires.findIndex((pos: Wire) => pos.position === 2);
+
+    const wire1: Wire = leadset.wires[wireIndex1];
+    const wire2: Wire = leadset.wires[wireIndex2];
+    const wire3: Wire = leadset.wires[wireIndex3];
+
+    if (wire1 && !wire2) {
+        textOffsetUpper = 0;
+    }
+
     // Третий провод с увеличенным «воздухом» между вторым и третьим
     const thirdWireY = centerContactY + 90;
+
+    const [selectedTerminal, setSelectedTerminal] = useState<number | null>(null);
+
+    const onClickTerminal = (terminal_id: number, index: number) => {
+        setSelectedTerminal(terminal_id);
+        console.log(terminal_id, index);
+    };
 
     return (
         <svg viewBox="0 0 550 250" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
             {/* Верхний провод */}
-            <path
-                d={`M${centerContactX + contactWidth / 2} ${centerContactY}
+            {wire1 && wire2 && (
+                <>
+                    <path
+                        d={`M${centerContactX + contactWidth / 2} ${centerContactY}
                    C 200 ${centerContactY - 40}, ${rightUpperContactX} ${
                        rightUpperContactY + contactHeight / 2
                    }, ${rightUpperContactX} ${rightUpperContactY + contactHeight / 2}`}
-                stroke={leadset.wires[0].wire_color_base.hex}
-                strokeWidth="12"
-                fill="none"
-            />
-            {leadset.wires[0].wire_color_add && (
-                <path
-                    d={`M${centerContactX + contactWidth / 2} ${centerContactY}
+                        stroke={leadset.wires[0].wire_color_base.hex}
+                        strokeWidth="12"
+                        fill="none"
+                    />
+                    {leadset.wires[0].wire_color_add && (
+                        <path
+                            d={`M${centerContactX + contactWidth / 2} ${centerContactY}
                        C 200 ${centerContactY - 40}, ${rightUpperContactX} ${
                            rightUpperContactY + contactHeight / 2
                        }, ${rightUpperContactX} ${rightUpperContactY + contactHeight / 2}`}
-                    stroke={leadset.wires[0].wire_color_add.hex}
-                    strokeWidth="4"
-                    fill="none"
-                />
+                            stroke={leadset.wires[0].wire_color_add.hex}
+                            strokeWidth="4"
+                            fill="none"
+                        />
+                    )}
+                </>
+            )}
+
+            {wire1 && !wire2 && (
+                <>
+                    <path
+                        d={`M${centerContactX + contactWidth / 2} ${centerContactY} L${rightUpperContactX} ${centerContactY}`}
+                        stroke={leadset.wires[0].wire_color_base.hex}
+                        strokeWidth="12"
+                        fill="none"
+                    />
+
+                    {leadset.wires[0].wire_color_add && (
+                        <path
+                            d={`M${centerContactX + contactWidth / 2} ${centerContactY} L${rightUpperContactX} ${centerContactY}`}
+                            stroke={leadset.wires[0].wire_color_add.hex}
+                            strokeWidth="4"
+                            fill="none"
+                        />
+                    )}
+                </>
             )}
 
             {/* Нижний провод */}
-            <path
-                d={`M${centerContactX + contactWidth / 2} ${centerContactY}
+            {wire2 && (
+                <>
+                    <path
+                        d={`M${centerContactX + contactWidth / 2} ${centerContactY}
                    C 200 ${centerContactY + 20}, ${rightLowerContactX} ${
                        rightLowerContactY + contactHeight / 2
                    }, ${rightLowerContactX} ${rightLowerContactY + contactHeight / 2}`}
-                stroke={leadset.wires[1].wire_color_base.hex}
-                strokeWidth="12"
-                fill="none"
-            />
-            {leadset.wires[1].wire_color_add && (
-                <path
-                    d={`M${centerContactX + contactWidth / 2} ${centerContactY}
+                        stroke={leadset.wires[1].wire_color_base.hex}
+                        strokeWidth="12"
+                        fill="none"
+                    />
+                    {leadset.wires[1].wire_color_add && (
+                        <path
+                            d={`M${centerContactX + contactWidth / 2} ${centerContactY}
                        C 200 ${centerContactY + 20}, ${rightLowerContactX} ${
                            rightLowerContactY + contactHeight / 2
                        }, ${rightLowerContactX} ${rightLowerContactY + contactHeight / 2}`}
-                    stroke={leadset.wires[1].wire_color_add.hex}
-                    strokeWidth="4"
-                    fill="none"
-                />
+                            stroke={leadset.wires[1].wire_color_add.hex}
+                            strokeWidth="4"
+                            fill="none"
+                        />
+                    )}
+                </>
             )}
 
             {/* Третий провод */}
-            <path
-                d={`M${centerContactX} ${thirdWireY}
+            {wire3 && (
+                <>
+                    <path
+                        d={`M${centerContactX} ${thirdWireY}
        C 200 ${thirdWireY + 20}, ${rightLowerContactX} ${rightLowerContactY + contactHeight / 2},
          ${rightLowerContactX} ${rightLowerContactY + contactHeight / 2}`}
-                stroke={leadset.wires[2].wire_color_base.hex}
-                strokeWidth="12"
-                fill="none"
-            />
-            {leadset.wires[2].wire_color_add && (
-                <path
-                    d={`M${centerContactX} ${thirdWireY}
+                        stroke={leadset.wires[2].wire_color_base.hex}
+                        strokeWidth="12"
+                        fill="none"
+                    />
+                    {leadset.wires[2].wire_color_add && (
+                        <path
+                            d={`M${centerContactX} ${thirdWireY}
            C 200 ${thirdWireY + 20}, ${rightLowerContactX} ${rightLowerContactY + contactHeight / 2},
              ${rightLowerContactX} ${rightLowerContactY + contactHeight / 2}`}
-                    stroke={leadset.wires[2].wire_color_add.hex}
-                    strokeWidth="4"
-                    fill="none"
-                />
+                            stroke={leadset.wires[2].wire_color_add.hex}
+                            strokeWidth="4"
+                            fill="none"
+                        />
+                    )}
+                </>
             )}
 
             {/* Подписи */}
-            <text
-                x={midX(centerContactX, rightUpperContactX)}
-                y={midY(centerContactX, rightUpperContactY + contactHeight / 2) - textOffsetUpper}
-                fontSize="12"
-                textAnchor="middle"
-                fill="black"
-                dominantBaseline="middle"
-            >
-                <tspan fontSize={'14'} fontWeight={'bold'}>
-                    2795
-                </tspan>
-                <tspan
+            {wire1 && (
+                <text
                     x={midX(centerContactX, rightUpperContactX)}
                     y={midY(centerContactX, rightUpperContactY + contactHeight / 2) - textOffsetUpper}
-                    dy="1.4em"
-                    fontSize={'10'}
+                    fontSize="12"
+                    textAnchor="middle"
+                    fill="black"
+                    dominantBaseline="middle"
                 >
-                    {leadset.wires[0].wire_key} {leadset.wires[0].description}
-                </tspan>
-            </text>
+                    <tspan fontSize={'14'} fontWeight={'bold'}>
+                        {wire1.wire_name} | {wire1.cross_section}
+                    </tspan>
+                    <tspan
+                        x={midX(centerContactX, rightUpperContactX)}
+                        y={midY(centerContactX, rightUpperContactY + contactHeight / 2) - textOffsetUpper}
+                        dy="1.4em"
+                        fontSize={'10'}
+                    >
+                        {wire1.wire_key} {wire1.description}
+                    </tspan>
+                </text>
+            )}
 
-            <text
-                x={midX(centerContactX, rightLowerContactX)}
-                y={midY(centerContactY, rightLowerContactY + contactHeight / 2) + textOffsetLower}
-                fontSize="12"
-                textAnchor="middle"
-                fill="black"
-            >
-                <tspan fontSize={'14'} fontWeight={'bold'}>
-                    4954
-                </tspan>
-                <tspan
+            {wire2 && (
+                <text
                     x={midX(centerContactX, rightLowerContactX)}
                     y={midY(centerContactY, rightLowerContactY + contactHeight / 2) + textOffsetLower}
-                    dy="1.4em"
-                    fontSize={'10'}
+                    fontSize="12"
+                    textAnchor="middle"
+                    fill="black"
                 >
-                    {leadset.wires[1].wire_key} {leadset.wires[1].description}
-                </tspan>
-            </text>
+                    <tspan fontSize={'14'} fontWeight={'bold'}>
+                        {wire2.wire_name} | {wire2.cross_section}
+                    </tspan>
+                    <tspan
+                        x={midX(centerContactX, rightLowerContactX)}
+                        y={midY(centerContactY, rightLowerContactY + contactHeight / 2) + textOffsetLower}
+                        dy="1.4em"
+                        fontSize={'10'}
+                    >
+                        {leadset.wires[1].wire_key}
+                    </tspan>
+                </text>
+            )}
 
-            <text
-                x={midX(centerContactX, rightLowerContactX)}
-                y={midY(thirdWireY, rightLowerContactY + contactHeight / 2) + textOffsetThird}
-                fontSize="12"
-                textAnchor="middle"
-                fill="black"
-            >
-                <tspan fontSize={'14'} fontWeight={'bold'}>
-                    4955
-                </tspan>
-                <tspan
+            {wire3 && (
+                <text
                     x={midX(centerContactX, rightLowerContactX)}
                     y={midY(thirdWireY, rightLowerContactY + contactHeight / 2) + textOffsetThird}
-                    dy="1.4em"
-                    fontSize={'10'}
+                    fontSize="12"
+                    textAnchor="middle"
+                    fill="black"
                 >
-                    {leadset.wires[2].wire_key} {leadset.wires[2].description}
-                </tspan>
-            </text>
+                    <tspan fontSize={'14'} fontWeight={'bold'}>
+                        {wire3.wire_name} | {wire3.cross_section}
+                    </tspan>
+                    <tspan
+                        x={midX(centerContactX, rightLowerContactX)}
+                        y={midY(thirdWireY, rightLowerContactY + contactHeight / 2) + textOffsetThird}
+                        dy="1.4em"
+                        fontSize={'10'}
+                    >
+                        {leadset.wires[2].wire_key} {leadset.wires[2].description}
+                    </tspan>
+                </text>
+            )}
 
             {/* Центральный контакт */}
             {leadset.terminals[terminalIndex2] && (
-                <>
+                <g onClick={() => onClickTerminal(leadset.terminals[terminalIndex2].id, leadset.terminals[terminalIndex2].position)}>
                     <path
                         d={contactPath}
                         fill="#AFAFAF"
@@ -178,12 +236,12 @@ export default function DoubleCrimpCable({ leadset }: { leadset: any }) {
                             {leadset.terminals[terminalIndex2].terminal_spn} | {leadset.terminals[terminalIndex2].terminal_supplier}
                         </tspan>
                     </text>
-                </>
+                </g>
             )}
 
             {/* Свободный контакт верхнего провода справа */}
             {leadset.terminals[terminalIndex1] && (
-                <>
+                <g onClick={() => onClickTerminal(leadset.terminals[terminalIndex1].id, leadset.terminals[terminalIndex1].position)}>
                     <path
                         d={contactPath}
                         fill="#AFAFAF"
@@ -202,12 +260,12 @@ export default function DoubleCrimpCable({ leadset }: { leadset: any }) {
                             {leadset.terminals[terminalIndex1].terminal_spn} | {leadset.terminals[terminalIndex1].terminal_supplier}
                         </tspan>
                     </text>
-                </>
+                </g>
             )}
 
             {/* Свободный контакт нижнего провода справа */}
             {leadset.terminals[terminalIndex3] && (
-                <>
+                <g onClick={() => onClickTerminal(leadset.terminals[terminalIndex3].id, leadset.terminals[terminalIndex3].position)}>
                     <path
                         d={contactPath}
                         fill="#AFAFAF"
@@ -226,12 +284,12 @@ export default function DoubleCrimpCable({ leadset }: { leadset: any }) {
                             {leadset.terminals[terminalIndex3].terminal_spn} | {leadset.terminals[terminalIndex3].terminal_supplier}
                         </tspan>
                     </text>
-                </>
+                </g>
             )}
 
             {/* Новый контакт слева для третьего провода */}
             {leadset.terminals[terminalIndex4] && (
-                <>
+                <g onClick={() => onClickTerminal(leadset.terminals[terminalIndex4].id, leadset.terminals[terminalIndex4].position)}>
                     <path
                         d={contactPath}
                         fill="#AFAFAF"
@@ -250,7 +308,7 @@ export default function DoubleCrimpCable({ leadset }: { leadset: any }) {
                             {leadset.terminals[terminalIndex4].terminal_spn} | {leadset.terminals[terminalIndex4].terminal_supplier}
                         </tspan>
                     </text>
-                </>
+                </g>
             )}
         </svg>
     );

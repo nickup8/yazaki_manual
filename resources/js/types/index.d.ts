@@ -68,6 +68,8 @@ export interface Wire {
     cross_section: number;
     created_at: string;
     updated_at: string;
+    position: number;
+    wire_name: string;
 }
 
 export interface Seal {
