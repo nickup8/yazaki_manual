@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CrimpStandartLeadsetRequest;
 use App\Http\Requests\LeadsetStoreRequest;
+use App\Http\Resources\CrimpStandardResource;
 use App\Http\Resources\LeadsetResource;
 use App\Models\Leadset;
 use App\Models\Wire;
@@ -104,8 +106,9 @@ class LeadsetController extends Controller
         return redirect()->route('leadsets.index')->with('success', 'Leadset успешно импортированы');
     }
 
-    public function show(Leadset $leadset)
+    public function show(Leadset $leadset, Request $request)
     {
+        
         return inertia('leadsets/leadset-show', [
             'leadset' => new LeadsetResource($leadset),
             

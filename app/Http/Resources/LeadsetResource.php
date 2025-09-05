@@ -31,5 +31,6 @@ class LeadsetResource extends JsonResource
         'seals' => SealResource::collection($this->seals),
         'wires' => WireResource::collection($this->wires),
         ];
+        
     }
 }

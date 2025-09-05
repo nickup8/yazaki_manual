@@ -1,7 +1,31 @@
 import { Terminal, Wire } from '@/types';
-import { useState } from 'react';
 
-export default function DoubleCrimpCable({ leadset }: { leadset: any }) {
+export default function DoubleCrimpCable({
+    leadset,
+    selectedTerminal,
+    selectedPosition,
+    selectedSeal,
+    selectedSealPosition,
+    selectedWired,
+    selectedWirePosition,
+    onSelectTerminal,
+}: {
+    leadset: any;
+    selectedTerminal: number | null;
+    selectedPosition: number | null;
+    selectedSeal: number | null;
+    selectedSealPosition: number | null;
+    selectedWired: number[] | null;
+    selectedWirePosition: number | null;
+    onSelectTerminal: (
+        terminalId: number | null,
+        position: number | null,
+        sealId: number | null,
+        sealPosition: number | null,
+        wired: number[] | null,
+        wirePosition: number | null,
+    ) => void;
+}) {
     const contactWidth = 50;
     const contactHeight = 30;
 
@@ -42,11 +66,12 @@ export default function DoubleCrimpCable({ leadset }: { leadset: any }) {
     // Третий провод с увеличенным «воздухом» между вторым и третьим
     const thirdWireY = centerContactY + 90;
 
-    const [selectedTerminal, setSelectedTerminal] = useState<number | null>(null);
-
-    const onClickTerminal = (terminal_id: number, index: number) => {
-        setSelectedTerminal(terminal_id);
-        console.log(terminal_id, index);
+    const handleClick = (terminalId: number, pos: number, wired: number[]) => {
+        if (selectedTerminal === terminalId && selectedPosition === pos) {
+            onSelectTerminal(null, null, null, null, null, null); // снять выделение
+        } else {
+            onSelectTerminal(terminalId, pos, null, null, wired, null);
+        }
     };
 
     return (
@@ -217,10 +242,21 @@ export default function DoubleCrimpCable({ leadset }: { leadset: any }) {
 
             {/* Центральный контакт */}
             {leadset.terminals[terminalIndex2] && (
-                <g onClick={() => onClickTerminal(leadset.terminals[terminalIndex2].id, leadset.terminals[terminalIndex2].position)}>
+                <g
+                    className="cursor-pointer"
+                    onClick={() =>
+                        handleClick(leadset.terminals[terminalIndex2].id, leadset.terminals[terminalIndex2].position, [wire1.id, wire2?.id])
+                    }
+                >
                     <path
                         d={contactPath}
                         fill="#AFAFAF"
+                        stroke={
+                            selectedTerminal === leadset.terminals[terminalIndex2].id &&
+                            selectedPosition === leadset.terminals[terminalIndex2].position
+                                ? '#000'
+                                : '#AFAFAF'
+                        }
                         transform={`translate(${centerContactX - contactWidth / 2}, ${centerContactY - contactHeight / 2})`}
                     />
                     <text
@@ -241,10 +277,19 @@ export default function DoubleCrimpCable({ leadset }: { leadset: any }) {
 
             {/* Свободный контакт верхнего провода справа */}
             {leadset.terminals[terminalIndex1] && (
-                <g onClick={() => onClickTerminal(leadset.terminals[terminalIndex1].id, leadset.terminals[terminalIndex1].position)}>
+                <g
+                    className="cursor-pointer"
+                    onClick={() => handleClick(leadset.terminals[terminalIndex1].id, leadset.terminals[terminalIndex1].position, [wire1.id])}
+                >
                     <path
                         d={contactPath}
                         fill="#AFAFAF"
+                        stroke={
+                            selectedTerminal === leadset.terminals[terminalIndex1].id &&
+                            selectedPosition === leadset.terminals[terminalIndex1].position
+                                ? '#000'
+                                : '#AFAFAF'
+                        }
                         transform={`translate(${rightUpperContactX}, ${rightUpperContactY}) scale(-1,1) translate(${-contactWidth},0)`}
                     />
                     <text
@@ -265,10 +310,21 @@ export default function DoubleCrimpCable({ leadset }: { leadset: any }) {
 
             {/* Свободный контакт нижнего провода справа */}
             {leadset.terminals[terminalIndex3] && (
-                <g onClick={() => onClickTerminal(leadset.terminals[terminalIndex3].id, leadset.terminals[terminalIndex3].position)}>
+                <g
+                    className="cursor-pointer"
+                    onClick={() =>
+                        handleClick(leadset.terminals[terminalIndex3].id, leadset.terminals[terminalIndex3].position, [wire2.id, wire3?.id])
+                    }
+                >
                     <path
                         d={contactPath}
                         fill="#AFAFAF"
+                        stroke={
+                            selectedTerminal === leadset.terminals[terminalIndex3].id &&
+                            selectedPosition === leadset.terminals[terminalIndex3].position
+                                ? '#000'
+                                : '#AFAFAF'
+                        }
                         transform={`translate(${rightLowerContactX}, ${rightLowerContactY}) scale(-1,1) translate(${-contactWidth},0)`}
                     />
                     <text
@@ -289,10 +345,19 @@ export default function DoubleCrimpCable({ leadset }: { leadset: any }) {
 
             {/* Новый контакт слева для третьего провода */}
             {leadset.terminals[terminalIndex4] && (
-                <g onClick={() => onClickTerminal(leadset.terminals[terminalIndex4].id, leadset.terminals[terminalIndex4].position)}>
+                <g
+                    className="cursor-pointer"
+                    onClick={() => handleClick(leadset.terminals[terminalIndex1].id, leadset.terminals[terminalIndex1].position, [wire3.id])}
+                >
                     <path
                         d={contactPath}
                         fill="#AFAFAF"
+                        stroke={
+                            selectedTerminal === leadset.terminals[terminalIndex4].id &&
+                            selectedPosition === leadset.terminals[terminalIndex4].position
+                                ? '#000'
+                                : '#AFAFAF'
+                        }
                         transform={`translate(${centerContactX - contactWidth / 2}, ${thirdWireY - contactHeight / 2})`}
                     />
                     <text

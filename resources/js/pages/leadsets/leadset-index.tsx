@@ -66,7 +66,7 @@ export default function LeadsetIndex({ leadsets }: any) {
                     </Tooltip>
                 </div>
                 <LeadsetFilterForm />
-                <LeadsetTable leadsets={leadsets.data} />
+                {leadsets.data.length > 0 && <LeadsetTable leadsets={leadsets.data} />}
             </div>
             {processing && <ImportLoader percentage={progress.percentage} total={progress.total} />}
         </AppLayout>
